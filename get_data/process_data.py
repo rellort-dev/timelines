@@ -149,12 +149,12 @@ def process_text_columns(df):
     df = df.dropna(subset=['body'])
     
     # Remove series of articles 
-    # (e.g. The Guardian's daily article series 'what we know on day x of the ukraine war')
+    # (e.g. The Guardian's daily 'what we know on day x of the ukraine war' article series)
     articles_to_remove = df.title.str.startswith((
-        'russia-ukraine war: what we know on day',  # The Guardian
-        'timeline: week',  # Al Jazeera
-        'russia-ukraine war: list of key events, day',  # Al Jazeera
-        'russia-ukraine war: what happened',  # NPR
+        'Russia-Ukraine war: what we know on day',  # The Guardian
+        'Timeline: Week',  # Al Jazeera
+        'Russia-Ukraine war: List of key events',  # Al Jazeera
+        'Russia-Ukraine war: What happened today',  # NPR
     ))
     df = df[~articles_to_remove] 
     
@@ -189,3 +189,7 @@ def process_text_columns(df):
     df.text = df.text.str.replace(' +', ' ', regex=True)
     
     return df
+
+df = pd.read_csv('./data/ukraine_war.csv')
+df = process_text_columns(df)
+df.to_csv('./data/ukraine_war.csv', index=False)
