@@ -1,14 +1,10 @@
 # BaseImage
 FROM python:3.9-slim
 
-# WORKDIR
-WORKDIR /Users/cyanaspect/Projects/timelines
+ENV PYTHONUNBUFFERED 1
 
-# COPY
-COPY backend backend
-COPY config config
-COPY ml ml
-COPY db.sqlite3 dbsqlite3
+WORKDIR /app
+
 COPY manage.py manage.py 
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
@@ -20,9 +16,3 @@ RUN apt-get update \
     && python3 -m pip install -e . --no-cache-dir \
     && python3 -m pip install protobuf==3.20.1 --no-cache-dir \
     && apt-get purge -y --auto-remove gcc build-essential
-
-# expose ports
-EXPOSE 3000
-
-# Start app
-ENTRYPOINT python3 manage.py runserver 0:3000
