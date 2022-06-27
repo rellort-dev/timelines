@@ -1,19 +1,20 @@
 import requests
 import pandas as pd
+from os.path import exists
 import csv
-from urllib import parse 
-from process_data import process_text_columns
+from urllib import parse
+from config import config
 
 
-API_KEY = 'e01547ade4c941e794ffb554c9a98d86'
 MAX_CSV_LENGTH = 32000  
 MAX_RESULTS_PER_PAGE = 100
 
-def get_list_of_articles(term, sources):
+def fetch_articles_from_news_api(term, sources):
     '''
     Fetches 100 articles from the past 30 days per news source.
     Returns a list of dictionaries, with each dictionary describing one article. 
     '''
+
     list_of_articles = []
 
     for source in sources:
@@ -21,10 +22,11 @@ def get_list_of_articles(term, sources):
                 f'q={parse.quote_plus(term)}&'
                 f'domains={source}&'
                 f'pageSize={MAX_RESULTS_PER_PAGE}&'
-                f'apiKey={API_KEY}&'
+                f'apiKey={config.NEWS_API_KEY}&'
                 'sortBy=popularity&'
                 'language=en')
         response = requests.get(url)
+        print(response)
         result = response.json()['articles']
         print(f'Got {str(len(result))} results from {source}.')
         list_of_articles += result
@@ -37,8 +39,10 @@ def save_articles_to_csv(list_of_articles, file_name):
     '''
     Given a list of articles in dictionary form, write and save the articles into csv.
     '''
+
+    file_dir = f'{config.DATA_DIR}/{file_name}.csv'
     
-    with open(f'../data/{file_name}.csv', 'w') as csv_file:
+    with open(file_dir, 'w') as csv_file:
         fieldnames = ['title', 'url', 'date_published', 'snippet', 'body']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -53,35 +57,21 @@ def save_articles_to_csv(list_of_articles, file_name):
                 'body': result['content']
             })
 
-def get_and_save_articles(search_term, sources):
+
+def get_articles(search_term, sources=config.SOURCES):
     '''
-    Search for articles using `search_term`, published by `sources`, 
-    and saves the results as a csv file with 5 columns: 
+    If articles are already cached, return them as a DataFrame. 
+    Else, fetch articles published by `sources` using `search_term`,
+    and save the results as a csv file with 5 columns: 
     `title`, `url`, `date_published`, `snippet`, `body`.
     '''
-    list_of_articles = get_list_of_articles(search_term, sources)
-    filename = search_term.replace(' ', '_')
-    save_articles_to_csv(list_of_articles, filename)
 
-
-def get_and_save_articles_with_parsed_text(search_term, sources):
-    '''
-    Search for articles using `search_term`, published by `sources`, 
-    and saves the results as a csv file with 6 columns: 
-    `title`, `url`, `date_published`, `snippet`, `body`, `text`. 
-    '''
-    get_and_save_articles(search_term, sources) 
-    filename = search_term.replace(' ', '_')
-
-    df = pd.read_csv(f'../data/{filename}.csv')
-    processed_df = process_text_columns(df).
-    processed_df.to_csv(f'../data/{filename}.csv', index=False)
+    file_name = search_term.replace(' ', '_')
+    file_dir = f'{config.DATA_DIR}/{file_name}.csv'
     
+    if not exists(file_dir):
+        list_of_articles = fetch_articles_from_news_api(search_term, sources)
+        save_articles_to_csv(list_of_articles, file_name)
 
-sources = ['economist.com', 'apnews.com','reuters.com','theguardian.com',
-           'washingtonpost.com','aljazeera.com', 'npr.org', 'nytimes.com',
-           'bbc.co.uk', 'straitstimes.com']
-search_term = 'inflation usa'
-
-get_and_save_articles_with_parsed_text(search_term, sources)
-
+    return pd.read_csv(file_dir)
+    
