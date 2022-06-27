@@ -1,5 +1,28 @@
-import pandas as pd
+from pathlib import Path
 import os
+
+# Directories
+BASE_DIR = Path(__file__).parent.parent.absolute()
+CONFIG_DIR = Path(BASE_DIR, 'config')
+BACKEND_DIR = Path(BASE_DIR, 'backend')
+ML_DIR = Path(BASE_DIR, 'ml')
+DATA_DIR = Path(ML_DIR, "data")
+
+# API Keys
+NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
+
+# Constants
+SOURCES = ['economist.com', 'apnews.com','reuters.com','theguardian.com',
+           'washingtonpost.com','aljazeera.com', 'npr.org', 'nytimes.com',
+           'bbc.co.uk', 'straitstimes.com']
+
+
+ARTICLES_TO_REMOVE = (
+    'Russia-Ukraine war: what we know on day',  # The Guardian
+    'Timeline: Week',  # Al Jazeera
+    'Russia-Ukraine war: List of key events',  # Al Jazeera
+    'Russia-Ukraine war: What happened today',  # NPR
+)
 
 # Ref: https://github.com/dipanjanS/text-analytics-with-python/blob/master/New-Second-Edition/Ch05%20-%20Text%20Classification/contractions.py
 CONTRACTION_MAP = {
@@ -131,65 +154,3 @@ CONTRACTION_MAP = {
 # Augment contraction map with alternative apostrophe used by some news outlets
 for contraction in list(CONTRACTION_MAP):
     CONTRACTION_MAP[contraction.replace("'", "’")] = CONTRACTION_MAP[contraction]
-
-def process_text_columns(df):
-    '''
-    Combines the `title`, `snippet`, and `body` columns 
-    into a single processed `text` column.
-    '''
-
-    # Remove articles with duplicate title, snippet, or body
-    df = df.drop_duplicates(subset=['title'])
-    df = df.drop_duplicates(subset=['snippet'])
-    df = df.drop_duplicates(subset=['body'])
-    
-    # Remove articles with no title, snippet, or body
-    df = df.dropna(subset=['title'])
-    df = df.dropna(subset=['snippet']) 
-    df = df.dropna(subset=['body'])
-    
-    # Remove series of articles 
-    # (e.g. The Guardian's daily 'what we know on day x of the ukraine war' article series)
-    articles_to_remove = df.title.str.startswith((
-        'Russia-Ukraine war: what we know on day',  # The Guardian
-        'Timeline: Week',  # Al Jazeera
-        'Russia-Ukraine war: List of key events',  # Al Jazeera
-        'Russia-Ukraine war: What happened today',  # NPR
-    ))
-    df = df[~articles_to_remove] 
-    
-    # Combine text columns
-    df['text'] = df.title + ' ' + df.snippet + ' ' + df.body
-    
-    # Convert words into lower case
-    df.text = df.text.str.lower()
-    
-    # Convert contractions into formal form
-    df.title = df.title.replace(CONTRACTION_MAP, regex=True)
-
-    # Remove HTML tags
-    df.text = df.text.str.replace(r'<[^<>]*>', '', regex=True)
-    
-    # Remove everything in parenthesis
-    df.text = df.text.str.replace(r'\([^\(\)]*\)', '', regex=True)
-    df.text = df.text.str.replace(r'\[[^\[\]]*\]', '', regex=True)
-
-    # Remove words or phrases that convey no meaning    
-    news_agencies = ['cnbc', 'the washington post', 'the associated press', 'reuters.com',
-                     'reuters', 'read more at straitstimes.com.', 'bbc news']
-    boilerplate_text =['placeholder while article actions load', 'posted',  
-                       'image source',  'getty images', 'image caption',  'good morning and welcome to the climate 202']
-    for meaningless_string in (news_agencies + boilerplate_text):
-        df.text = df.text.str.replace(meaningless_string, '', regex=True)
-    
-    # Remove non-alphanumeric characters
-    df.text = df.text.str.replace('[^a-zA-Z0-9]', ' ', regex=True)
-    
-    # Remove duplicate spaces
-    df.text = df.text.str.replace(' +', ' ', regex=True)
-    
-    return df
-
-df = pd.read_csv('./data/ukraine_war.csv')
-df = process_text_columns(df)
-df.to_csv('./data/ukraine_war.csv', index=False)
