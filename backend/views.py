@@ -12,5 +12,5 @@ class Timeline(APIView):
     def get(self, request):
         q = request.query_params['q']
         articles = get_articles(q)
-        clusters = sliding_window_optics_pipeline(articles)
-        return Response(data=clusters)
+        events = sliding_window_optics_pipeline(articles)
+        return Response(data=events)
