@@ -9,8 +9,8 @@ def embed_text_column(df):
     '''
     Embeds the `text` column of a DataFrame into an `embeddings` column.
     '''
-    
-    embeddings = [nlp(text).vector for text in df.text]
+    docs = list(nlp.pipe(df.text, disable = ['ner', 'tagger', 'parser', 'lemmatizer', 'textcat']))
+    embeddings = [doc.vector for doc in docs]
     df_with_embeddings = df.copy()
     df_with_embeddings['embeddings'] = embeddings
     return df_with_embeddings
@@ -36,6 +36,3 @@ def cluster_each_window(model, sliding_windows, keep_raw_text=False, keep_embedd
         clusters = partition_articles_into_clusters(window, model)
         clusters_for_each_window.append(clusters)
     return clusters_for_each_window
-
-
-    
