@@ -1,7 +1,0 @@
-timelines:
-  build: .
-  command: python3 /app/manage.py runserver 0:3000
-  volumes:
-    - ./:/app
-  ports:
-    - 3000:3000
