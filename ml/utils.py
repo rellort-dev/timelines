@@ -55,6 +55,7 @@ def get_modal_date(cluster):
     Given a DataFrame representing a cluster of articles, 
     Returns the modal date of articles in that cluster.
     '''
+
     dates = cluster.date_published.dt.date
     return dates.mode()[0]
 
@@ -63,6 +64,7 @@ def get_cluster_articles_as_dicts(cluster):
     Given a DataFrame representing a cluster of articles, 
     Returns a list of dictionaries, where each dictionary is an article.
     '''
+
     cluster = cluster.drop(columns=['body','embeddings'])  # Include all columns except body and embeddings
     return cluster.to_dict('records')
 
