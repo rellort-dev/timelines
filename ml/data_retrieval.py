@@ -26,7 +26,6 @@ def fetch_articles_from_news_api(term, sources):
                 'sortBy=popularity&'
                 'language=en')
         response = requests.get(url)
-        print(response)
         result = response.json()['articles']
         print(f'Got {str(len(result))} results from {source}.')
         list_of_articles += result

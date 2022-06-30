@@ -8,6 +8,9 @@ WORKDIR /app
 COPY manage.py manage.py 
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
+COPY backend backend
+COPY ml ml 
+COPY config config
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc build-essential \
