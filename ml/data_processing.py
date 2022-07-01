@@ -65,17 +65,17 @@ def process_text_columns(df,
     return df
 
 
-def partition_data_into_windows(df, window_delta=0, skip_delta=1):
+def partition_data_into_windows(df, window_delta=0, step=1):
     '''
     Returns a list of DataFrames, where each DataFrame contains 
     articles published on some day += window_delta. 
 
     Examples: 
-        Parameters                Days contained in each window
-    window_delta=0, skip_delta=1 --> [4-4, 5-5, 6-6, ...]
-    window_delta=1, skip_delta=1 --> [3-5, 4-6, 5-7, ...]
-    window_delta=2, skip_delta=1 --> [2-6, 3-7, 4-8, ...]
-    window_delta=0, skip_delta=2 --> [4-4, 6-6, 8-8, ...]
+        Parameters           Days contained in each window
+    window_delta=0, step=1 --> [4-4, 5-5, 6-6, ...]
+    window_delta=1, step=1 --> [3-5, 4-6, 5-7, ...]
+    window_delta=2, step=1 --> [2-6, 3-7, 4-8, ...]
+    window_delta=0, step=2 --> [4-4, 6-6, 8-8, ...]
     '''
 
     windows = []
@@ -86,7 +86,7 @@ def partition_data_into_windows(df, window_delta=0, skip_delta=1):
 
     for d in daterange(start_date + window_size,
                        end_date - window_size + timedelta(days=1), 
-                       timedelta(days=skip_delta)):
+                       timedelta(days=step)):
         lower_bound = d - window_size 
         upper_bound = d + window_size
         is_within_window = (lower_bound <= df.date_published.dt.date) & (df.date_published.dt.date <= upper_bound)

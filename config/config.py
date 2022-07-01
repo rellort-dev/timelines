@@ -7,6 +7,8 @@ CONFIG_DIR = Path(BASE_DIR, 'config')
 BACKEND_DIR = Path(BASE_DIR, 'backend')
 ML_DIR = Path(BASE_DIR, 'ml')
 DATA_DIR = Path(ML_DIR, "data")
+TESTS_DIR = Path(BASE_DIR, 'tests')
+FIXTURES_DIR = Path(TESTS_DIR, 'fixtures')
 
 # API Keys
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')

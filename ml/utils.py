@@ -3,8 +3,8 @@ from datetime import timedelta
 import numpy as np
 from sklearn.metrics import pairwise_distances_argmin_min
 
-def daterange(start_date, end_date, skip_delta=timedelta(days=1)):
-    for n in range(0, int((end_date - start_date).days), skip_delta.days):
+def daterange(start_date, end_date, step=timedelta(days=1)):
+    for n in range(0, int((end_date - start_date).days), step.days):
         yield start_date + timedelta(n)
 
 def partition_articles_into_clusters(articles, fitted_model):
@@ -65,7 +65,7 @@ def get_cluster_articles_as_dicts(cluster):
     Returns a list of dictionaries, where each dictionary is an article.
     '''
 
-    cluster = cluster.drop(columns=['body','embeddings'])  # Include all columns except body and embeddings
+    cluster = cluster.drop(columns=['body','embeddings']) 
     return cluster.to_dict('records')
 
 def parse_into_events(clusters_for_each_window):
