@@ -8,7 +8,7 @@ with open(Path(BASE_DIR, 'requirements.txt'), 'r') as file:
 
 test_packages = [
     'pytest~=7.1.2',
-    'pytest-env~=0.6.2'
+    'pytest-env~=0.6.2',
 ]
 
 # Define our package
