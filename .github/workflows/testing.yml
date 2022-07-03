@@ -1,16 +1,16 @@
 name: testing
 on:
-    push:
-        branches:
-        - main
-        - develop
+  push:
+    branches:
+      - main
+      - develop
     pull_request:
-        branches:
+      branches:
         - main
         - develop
 jobs: 
-    test-code:
-        runs-on: ubuntu-latest
+  test-code:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
