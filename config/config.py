@@ -1,17 +1,27 @@
+import datetime
 from pathlib import Path
 import os
+
 
 # Directories
 BASE_DIR = Path(__file__).parent.parent.absolute()
 CONFIG_DIR = Path(BASE_DIR, 'config')
 BACKEND_DIR = Path(BASE_DIR, 'backend')
 ML_DIR = Path(BASE_DIR, 'ml')
-DATA_DIR = Path(ML_DIR, "data")
 TESTS_DIR = Path(BASE_DIR, 'tests')
 FIXTURES_DIR = Path(TESTS_DIR, 'fixtures')
 
 # API Keys
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
+
+# Google Cloud Storage
+GOOGLE_CLOUD_BUCKET_NAME = 'timelines-355206.appspot.com'
+
+def get_data_folder_name(is_test=False):
+    if is_test:
+        return 'dev/'
+    return str(datetime.date(datetime.now())) + '/'
+
 
 # Constants
 SOURCES = ['economist.com', 'apnews.com','reuters.com','theguardian.com',
