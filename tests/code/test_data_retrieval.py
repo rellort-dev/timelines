@@ -36,11 +36,6 @@ class TestGetArticles:
     def setup_class(cls):
         cls.default_term = 'American economy'
 
-    @classmethod
-    def teardown_class(cls):
-        file_name = cls.default_term.replace(' ', '_')
-        os.remove(f'{config.DATA_DIR}/{file_name}.csv')
-
     def test_cache(self): 
         get_articles(self.default_term)
         with patch('ml.data_retrieval.fetch_articles_from_news_api', 
