@@ -10,6 +10,7 @@ on:
       - develop
 env:
   NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
 jobs: 
   test-code:
     runs-on: ubuntu-latest

@@ -1,9 +1,12 @@
+import logging
+from tempfile import TemporaryDirectory
 import requests
 import pandas as pd
-from os.path import exists
 import csv
 from urllib import parse
 from config import config
+from google.cloud import storage 
+from google.api_core.exceptions import NotFound
 
 
 MAX_CSV_LENGTH = 32000  
@@ -27,22 +30,20 @@ def fetch_articles_from_news_api(term, sources):
                 'language=en')
         response = requests.get(url)
         result = response.json()['articles']
-        print(f'Got {str(len(result))} results from {source}.')
+        logging.debug(f'Got {str(len(result))} results from {source}.')
         list_of_articles += result
     
-    print(f'========== Got {str(len(list_of_articles))} results in total. ==========')
+    logging.debug(f'========== Got {str(len(list_of_articles))} results in total. ==========')
     return list_of_articles    
 
 
-def save_articles_to_csv(list_of_articles, file_name):
+def save_articles_to_csv(list_of_articles, file_path):
     '''
     Given a list of articles in dictionary form, write and save the articles into csv.
     '''
 
-    file_dir = f'{config.DATA_DIR}/{file_name}.csv'
-    
-    with open(file_dir, 'w') as csv_file:
-        fieldnames = ['title', 'url', 'date_published', 'snippet', 'body']
+    with open(file_path, 'w') as csv_file:
+        fieldnames = ['title', 'url', 'thumbnail_url', 'date_published', 'snippet', 'body']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for result in list_of_articles:
@@ -51,6 +52,7 @@ def save_articles_to_csv(list_of_articles, file_name):
             writer.writerow({
                 'title': result['title'],
                 'url': result['url'],
+                'thumbnail_url': result['urlToImage'],
                 'date_published': result['publishedAt'],
                 'snippet': result['description'],
                 'body': result['content']
@@ -61,16 +63,23 @@ def get_articles(search_term, sources=config.SOURCES):
     '''
     If articles are already cached, return them as a DataFrame. 
     Else, fetch articles published by `sources` using `search_term`,
-    and save the results as a csv file with 5 columns: 
-    `title`, `url`, `date_published`, `snippet`, `body`.
+    and save the results as a csv file with 6 columns: 
+    `title`, `url`, `thumbnail_url`, `date_published`, `snippet`, `body`.
     '''
 
-    file_name = search_term.replace(' ', '_')
-    file_dir = f'{config.DATA_DIR}/{file_name}.csv'
-    
-    if not exists(file_dir):
-        list_of_articles = fetch_articles_from_news_api(search_term, sources)
-        save_articles_to_csv(list_of_articles, file_name)
+    file_name = f'{search_term.replace(" ", "_")}.csv'
 
-    return pd.read_csv(file_dir)
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(config.GOOGLE_CLOUD_BUCKET_NAME)
+    blob = bucket.blob(config.get_data_folder_name(is_test=True) + file_name)
     
+    with TemporaryDirectory() as temp_dir:
+        file_path = temp_dir + file_name
+        try: 
+            blob.download_to_filename(file_path)
+        except NotFound:  
+            articles = fetch_articles_from_news_api(search_term, sources)
+            save_articles_to_csv(articles, file_path)
+            blob.upload_from_filename(file_path)
+
+        return pd.read_csv(file_path)

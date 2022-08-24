@@ -17,7 +17,6 @@ def sliding_window_optics_pipeline(df):
     # Data processing
     df = process_text_columns(df)
     df.date_published = pd.to_datetime(df.date_published)
-    df.to_csv(f'{config.DATA_DIR}/china_lockdown.csv', index=False)
 
     # Embedding text columns
     df_with_embeddings = embed_text_column(df)
