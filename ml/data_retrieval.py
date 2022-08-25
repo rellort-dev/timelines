@@ -7,6 +7,7 @@ from urllib import parse
 from config import config
 from google.cloud import storage 
 from google.api_core.exceptions import NotFound
+from google.auth.exceptions import DefaultCredentialsError
 
 
 MAX_CSV_LENGTH = 32000  
@@ -29,6 +30,9 @@ def fetch_articles_from_news_api(term, sources):
                 'sortBy=popularity&'
                 'language=en')
         response = requests.get(url)
+        print(response.json())
+        if not 'articles' in response.json():
+            raise ValueError('Unable to fetch articles from source. Check your API key.')
         result = response.json()['articles']
         logging.debug(f'Got {str(len(result))} results from {source}.')
         list_of_articles += result
@@ -69,7 +73,11 @@ def get_articles(search_term, sources=config.SOURCES):
 
     file_name = f'{search_term.replace(" ", "_")}.csv'
 
-    storage_client = storage.Client()
+    try:
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        raise ValueError("Unable to connect to cloud storage. "
+                         + "Check the GOOGLE_APPLICATION_CREDENTIALS environment variable.")
     bucket = storage_client.bucket(config.GOOGLE_CLOUD_BUCKET_NAME)
     blob = bucket.blob(config.get_data_folder_name(is_test=True) + file_name)
     
