@@ -11,19 +11,19 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import config
+from config import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = config.BASE_DIR
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 # SECURITY WARNING: change in production to only include production url!
-ALLOWED_HOSTS = os.environ.get('CLOUD_RUN_URL')
+ALLOWED_HOSTS = [os.environ.get('GOOGLE_CLOUD_RUN_URL')]
 
 
 # Application definition
@@ -120,6 +120,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if os.environ.get('DJANGO_DEVELOPMENT'):
+if os.environ.get('TIMELINES_DEVELOPMENT_MODE'):
     # Override production settings
     from backend.local import *
