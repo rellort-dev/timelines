@@ -30,9 +30,11 @@ def fetch_articles_from_news_api(term, sources):
                 'sortBy=popularity&'
                 'language=en')
         response = requests.get(url)
-        print(response.json())
         if not 'articles' in response.json():
-            raise ValueError('Unable to fetch articles from source. Check your API key.')
+            message = 'Unable to fetch articles from source. Check your API key.'
+            logging.debug(message)
+            raise ValueError(message)
+
         result = response.json()['articles']
         logging.debug(f'Got {str(len(result))} results from {source}.')
         list_of_articles += result
@@ -62,6 +64,20 @@ def save_articles_to_csv(list_of_articles, file_path):
                 'body': result['content']
             })
 
+def get_storage_blob(file_name):
+    '''
+    Get the Google Cloud Storage blob corresponding to the given file name.
+    '''
+    try:
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        message = 'Unable to connect to cloud storage. ' \
+            + 'Check the GOOGLE_APPLICATION_CREDENTIALS environment variable.'
+        logging.debug(message)
+        raise ValueError(message)
+    bucket = storage_client.bucket(config.GOOGLE_CLOUD_BUCKET_NAME)
+    return bucket.blob(config.get_data_folder_name() + file_name)
+
 
 def get_articles(search_term, sources=config.SOURCES):
     '''
@@ -72,14 +88,7 @@ def get_articles(search_term, sources=config.SOURCES):
     '''
 
     file_name = f'{search_term.replace(" ", "_")}.csv'
-
-    try:
-        storage_client = storage.Client()
-    except DefaultCredentialsError:
-        raise ValueError("Unable to connect to cloud storage. "
-                         + "Check the GOOGLE_APPLICATION_CREDENTIALS environment variable.")
-    bucket = storage_client.bucket(config.GOOGLE_CLOUD_BUCKET_NAME)
-    blob = bucket.blob(config.get_data_folder_name(is_test=True) + file_name)
+    blob = get_storage_blob(file_name)
     
     with TemporaryDirectory() as temp_dir:
         file_path = temp_dir + file_name
