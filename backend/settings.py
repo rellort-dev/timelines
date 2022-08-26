@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = False
 
 # SECURITY WARNING: change in production to only include production url!
-ALLOWED_HOSTS = ["https://timelines-kuhu2up3ka-as.a.run.app/"]
+ALLOWED_HOSTS = os.environ.get('CLOUD_RUN_URL')
 
 
 # Application definition
