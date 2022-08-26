@@ -20,5 +20,4 @@ RUN apt-get update \
     && python3 -m pip install protobuf==3.20.1 --no-cache-dir \
     && apt-get purge -y --auto-remove gcc build-essential
 
-CMD python manage.py makemigrations \
-    && python manage.py runserver 0:8080
+CMD python manage.py runserver 0:8080
