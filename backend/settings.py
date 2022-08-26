@@ -10,22 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
+import os
+import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+BASE_DIR = config.BASE_DIR
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n354naw&t0hjr2c&d#uitig032i)#xxp6^%%6c^xl&74tp*gi^'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: change in production to only include production url!
+ALLOWED_HOSTS = ["https://timelines-kuhu2up3ka-as.a.run.app/"]
 
 
 # Application definition
@@ -121,3 +119,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+if os.environ.get('DJANGO_DEVELOPMENT'):
+    # Override production settings
+    from backend.local import *
