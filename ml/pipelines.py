@@ -13,6 +13,9 @@ def sliding_window_optics_pipeline(df):
     Embeddings: Spacy 
     Clustering algorithm: Sliding-window OPTICS 
     '''
+
+    if df.empty:
+        return []
   
     # Data processing
     df = process_text_columns(df)
