@@ -119,6 +119,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if os.environ.get('TIMELINES_DEVELOPMENT_MODE'):
+if os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true':
     # Override production settings
     from backend.local import *

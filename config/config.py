@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from pathlib import Path
 import os
 
@@ -17,7 +17,7 @@ NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 # Google Cloud Storage
 GOOGLE_CLOUD_BUCKET_NAME = os.environ.get('GOOGLE_CLOUD_BUCKET_NAME')
 
-def get_data_folder_name(is_dev_mode=os.environ.get('TIMELINES_DEVELOPMENT_MODE')):
+def get_data_folder_name(is_dev_mode=os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'):
     if is_dev_mode:
         return 'dev/'
     return str(datetime.date(datetime.now())) + '/'
