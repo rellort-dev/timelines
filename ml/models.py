@@ -3,14 +3,14 @@ import spacy
 from sklearn import clone
 from .utils import partition_articles_into_clusters
 
-nlp = spacy.load('en_core_web_lg')
+nlp = spacy.load('en_core_web_lg', exclude=['ner', 'tagger', 'parser', 'lemmatizer', 'textcat', 'attribute_ruler', 'senter'])
 
 def embed_text_column(df):
     '''
     Embeds the `text` column of a DataFrame into an `embeddings` column.
     '''
 
-    docs = list(nlp.pipe(df.text, disable = ['ner', 'tagger', 'parser', 'lemmatizer', 'textcat']))
+    docs = list(nlp.pipe(df.text))
     embeddings = [doc.vector for doc in docs]
     df_with_embeddings = df.copy()
     df_with_embeddings['embeddings'] = embeddings
