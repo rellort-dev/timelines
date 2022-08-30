@@ -74,8 +74,8 @@ def parse_into_events(clusters_for_each_window):
     is the DataFrame corresponding to the c-th cluster for the w-th window,
     Returns a list of events sorted by date, where each event is a dictionary:
     {
-        'event_name': string
-        'event_date': date
+        'name': string
+        'date': date
         'articles': [
             {
                 'title': string
@@ -91,8 +91,8 @@ def parse_into_events(clusters_for_each_window):
     for window in clusters_for_each_window:
         for cluster in window:
             events.append({
-                'event_name': get_cluster_title(cluster),
-                'event_date': get_modal_date(cluster), 
+                'name': get_cluster_title(cluster),
+                'date': get_modal_date(cluster), 
                 'articles': get_cluster_articles_as_dicts(cluster)
             })
-    return sorted(events, key=lambda event : event['event_date'])
+    return sorted(events, key=lambda event : event['date'])
