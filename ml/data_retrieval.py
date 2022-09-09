@@ -33,8 +33,8 @@ class Storage:
         blob = self.bucket.blob(cloud_file_path)
         
         with TemporaryDirectory() as temp_dir:
-            temp_file_path = temp_dir + file_name
-            with open(file_name, 'w') as temp_file:
+            temp_file_path = f'{temp_dir}/{file_name}'
+            with open(file_name, 'w'):
                 try: 
                     blob.download_to_filename(temp_file_path)
                     return True, pd.read_csv(temp_file_path)
@@ -48,10 +48,10 @@ class Storage:
         blob = self.bucket.blob(cloud_file_path)
 
         with TemporaryDirectory() as temp_dir:
-            temp_file_name = temp_dir + file_name
-            with open(temp_file_name, 'w') as temp_file:
-                articles.to_csv(temp_file_name, index=False)
-                blob.upload_from_filename(temp_file_name)
+            temp_file_path = f'{temp_dir}/{file_name}'
+            with open(temp_file_path, 'w'):
+                articles.to_csv(temp_file_path, index=False)
+                blob.upload_from_filename(temp_file_path)
 
     def get_timeline(self, file_name):
         assert file_name.endswith('.json')
@@ -60,13 +60,12 @@ class Storage:
         blob = self.bucket.blob(cloud_file_path)
         
         with TemporaryDirectory() as temp_dir:
-            temp_file_name = temp_dir + file_name
+            temp_file_path = f'{temp_dir}/{file_name}'
             try:
-                blob.download_to_filename(temp_file_name)
+                blob.download_to_filename(temp_file_path)
             except NotFound:
                 return False, None
-
-            with open(temp_file_name) as file:
+            with open(temp_file_path) as file:
                 return True, json.load(file)
 
     def save_timeline(self, timeline, file_name):
@@ -76,11 +75,11 @@ class Storage:
         blob = self.bucket.blob(cloud_file_path) 
         
         with TemporaryDirectory() as temp_dir:
-            file_path = temp_dir + "/" + file_name
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, 'w') as fp:
+            temp_file_path = f'{temp_dir}/{file_name}'
+            os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+            with open(temp_file_path, 'w') as fp:
                 json.dump(timeline, fp, default=str)
-            blob.upload_from_filename(file_path)
+            blob.upload_from_filename(temp_file_path)
 
 
 def fetch_articles_from_news_api(search_term, sources):
