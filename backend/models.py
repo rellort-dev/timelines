@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from pydantic import BaseModel
 from pydantic import HttpUrl
 
@@ -6,7 +6,7 @@ class Article(BaseModel):
     title: str
     url: HttpUrl
     thumbnail_url: HttpUrl
-    date_published: date
+    date_published: datetime
     snippet: str
 
 

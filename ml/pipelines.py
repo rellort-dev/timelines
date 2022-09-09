@@ -4,7 +4,6 @@ from sklearn.cluster import OPTICS
 from ml.data_processing import partition_data_into_windows, process_text_columns
 from ml.models import cluster_each_window, embed_text_column
 from ml.utils import parse_into_events, remove_largest_cluster_of_each_window
-from config import config
 
 
 def sliding_window_optics_pipeline(df):

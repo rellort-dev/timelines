@@ -65,7 +65,7 @@ def get_cluster_articles_as_dicts(cluster):
     Returns a list of dictionaries, where each dictionary is an article.
     '''
 
-    cluster = cluster.drop(columns=['body','embeddings']) 
+    cluster = cluster.drop(columns=['body', 'embeddings']) 
     return cluster.to_dict('records')
 
 def parse_into_events(clusters_for_each_window):
@@ -92,7 +92,7 @@ def parse_into_events(clusters_for_each_window):
         for cluster in window:
             events.append({
                 'name': get_cluster_title(cluster),
-                'date': get_modal_date(cluster), 
+                'date': get_modal_date(cluster).isoformat(), 
                 'articles': get_cluster_articles_as_dicts(cluster)
             })
     return sorted(events, key=lambda event : event['date'])

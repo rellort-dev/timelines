@@ -5,6 +5,8 @@ from pathlib import Path
 import os
 
 
+IS_DEV_MODE = os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'
+
 # Directories
 BASE_DIR = Path(__file__).parent.parent.absolute()
 CONFIG_DIR = Path(BASE_DIR, 'config')
@@ -19,10 +21,15 @@ NEWS_API_KEY = os.environ['NEWS_API_KEY']
 # Google Cloud Storage
 GOOGLE_CLOUD_BUCKET_NAME = os.environ['GOOGLE_CLOUD_BUCKET_NAME']
 
-def get_data_folder_name(is_dev_mode=os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'):
-    if is_dev_mode:
-        return 'dev/'
-    return str(datetime.date(datetime.now())) + '/'
+def get_articles_folder_name(is_dev_mode=IS_DEV_MODE):
+    prefix = 'articles'
+    suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
+    return f'{prefix}/{suffix}/'
+
+def get_timeline_folder_name(is_dev_mode=IS_DEV_MODE):
+    prefix = 'timelines'
+    suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
+    return f'{prefix}/{suffix}/'
 
 # CORS
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
@@ -48,7 +55,6 @@ for contraction in list(CONTRACTION_MAP):
     CONTRACTION_MAP[contraction.replace("'", "’")] = CONTRACTION_MAP[contraction]
 
 # Development settings
-IS_DEV_MODE = os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'
 
 if IS_DEV_MODE:
     ALLOWED_HOSTS = ['*']
