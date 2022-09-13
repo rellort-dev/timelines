@@ -1,7 +1,7 @@
 import numpy as np
 import spacy
 from sklearn import clone
-from .utils import partition_articles_into_clusters
+from .utils import partition_into_clusters
 
 nlp = spacy.load('en_core_web_lg', 
                  exclude=['ner', 'tok2vec', 'tagger', 'parser', 'senter', 
@@ -36,6 +36,6 @@ def cluster_each_window(model, sliding_windows, keep_raw_text=False, keep_embedd
         if not keep_raw_text:
             window = window.drop(columns=['text'])
 
-        clusters = partition_articles_into_clusters(window, model)
+        clusters = partition_into_clusters(window, model)
         clusters_for_each_window.append(clusters)
     return clusters_for_each_window
