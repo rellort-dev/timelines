@@ -39,7 +39,8 @@ def sliding_window_optics_pipeline(df):
     optics = OPTICS(min_samples=min_samples, xi=0.05)
     clusters_for_each_window = cluster_each_window(optics, sliding_windows, keep_embeddings=True)
     
-    # Largest cluster is usually (>99% of the time) filled with unimportant events 
+    # Largest cluster is usually (>99% of the time) filled with articles 
+    # that don't constitute an event, i.e. a "junk" cluster.
     clusters_for_each_window = remove_largest_cluster_of_each_window(clusters_for_each_window)
     
     return parse_into_events(clusters_for_each_window)

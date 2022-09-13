@@ -26,14 +26,14 @@ storage = Storage()
 @app.get("/timeline", response_model=Timeline)
 @limiter.limit('1/second')
 async def get_timeline(request: Request, q: str):
-
     timeline_file_name = f'{q.replace(" ", "_")}.json'
     timeline_is_cached, timeline = storage.get_timeline(timeline_file_name)
     if timeline_is_cached:
         return timeline
-        
+
     articles = fetch_articles_from_news_api(q, sources=config.SOURCES)
     events = sliding_window_optics_pipeline(articles)
     timeline = {'events': events}
+
     storage.save_timeline(timeline, timeline_file_name)  # TODO: make this async
     return timeline
