@@ -81,6 +81,7 @@ class Storage:
                 json.dump(timeline, fp, default=str)
             blob.upload_from_filename(temp_file_path)
 
+
 def fetch_articles_from_news_api(search_term, sources):
     '''
     Fetch and return a DataFrame of news articles (maximum 100 articles per news source).
@@ -100,7 +101,6 @@ def fetch_articles_from_news_api(search_term, sources):
             for source in sources]
     responses = (grequests.get(url) for url in urls)
     
-
     for response in grequests.imap(responses):
         if 'articles' not in response.json():
             message = 'Unable to fetch articles from source. Check your API key.'
