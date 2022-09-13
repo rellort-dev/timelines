@@ -3,7 +3,9 @@ import spacy
 from sklearn import clone
 from .utils import partition_articles_into_clusters
 
-nlp = spacy.load('en_core_web_lg', exclude=['ner', 'tok2vec', 'tagger', 'parser', 'lemmatizer', 'textcat', 'attribute_ruler', 'senter'])
+nlp = spacy.load('en_core_web_lg', 
+                 exclude=['ner', 'tok2vec', 'tagger', 'parser', 'senter', 
+                          'textcat', 'attribute_ruler', 'lemmatizer'])
 
 def embed_text_column(df):
     '''
