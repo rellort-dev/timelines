@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import pandas as pd
-import requests
+import grequests
 from tempfile import TemporaryDirectory
 from urllib import parse
 from google.cloud import storage 
@@ -34,7 +34,7 @@ class Storage:
         
         with TemporaryDirectory() as temp_dir:
             temp_file_path = f'{temp_dir}/{file_name}'
-            with open(file_name, 'w'):
+            with open(temp_file_path, 'w'):
                 try: 
                     blob.download_to_filename(temp_file_path)
                     return True, pd.read_csv(temp_file_path)
@@ -81,7 +81,6 @@ class Storage:
                 json.dump(timeline, fp, default=str)
             blob.upload_from_filename(temp_file_path)
 
-
 def fetch_articles_from_news_api(search_term, sources):
     '''
     Fetch and return a DataFrame of news articles (maximum 100 articles per news source).
@@ -91,22 +90,24 @@ def fetch_articles_from_news_api(search_term, sources):
     MAX_RESULTS_PER_PAGE = 100
     articles = []
 
-    for source in sources:
-        url = ('https://newsapi.org/v2/everything?'
+    urls = [('https://newsapi.org/v2/everything?'
                 f'q={parse.quote_plus(search_term)}&'
                 f'domains={source}&'
                 f'pageSize={MAX_RESULTS_PER_PAGE}&'
                 f'apiKey={config.NEWS_API_KEY}&'
                 'sortBy=popularity&'
                 'language=en')
-        response = requests.get(url)
+            for source in sources]
+    responses = (grequests.get(url) for url in urls)
+    
+
+    for response in grequests.imap(responses):
         if 'articles' not in response.json():
             message = 'Unable to fetch articles from source. Check your API key.'
             logging.debug(message)
             raise ValueError(message)
 
         results = response.json()['articles']
-        logging.debug(f'Got {str(len(results))} results from {source}.')
 
         for result in results:
             articles.append({
