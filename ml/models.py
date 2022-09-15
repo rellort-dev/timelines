@@ -29,7 +29,7 @@ def cluster_each_window(model, sliding_windows, keep_raw_text=False, keep_embedd
     clusters_for_each_window = []
     for window in sliding_windows:
         x = np.stack(window.embeddings)
-        model = clone(model).fit(x)  # Clone to reset parameters before fitting again
+        model = model.fit(x)
         
         if not keep_embeddings:
             window = window.drop(columns=['embeddings'])
