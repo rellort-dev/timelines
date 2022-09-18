@@ -4,7 +4,6 @@ from sklearn.cluster import OPTICS
 from ml.data_processing import partition_data_into_windows, process_text_columns
 from ml.models import cluster_each_window, embed_text_column
 from ml.utils import parse_into_events, remove_largest_cluster_of_each_window
-from config import config
 
 
 def sliding_window_optics_pipeline(df):
@@ -13,11 +12,13 @@ def sliding_window_optics_pipeline(df):
     Embeddings: Spacy 
     Clustering algorithm: Sliding-window OPTICS 
     '''
+
+    if df.empty:
+        return []
   
     # Data processing
     df = process_text_columns(df)
     df.date_published = pd.to_datetime(df.date_published)
-    df.to_csv(f'{config.DATA_DIR}/china_lockdown.csv', index=False)
 
     # Embedding text columns
     df_with_embeddings = embed_text_column(df)
@@ -38,7 +39,8 @@ def sliding_window_optics_pipeline(df):
     optics = OPTICS(min_samples=min_samples, xi=0.05)
     clusters_for_each_window = cluster_each_window(optics, sliding_windows, keep_embeddings=True)
     
-    # Largest cluster is usually (>99% of the time) filled with unimportant events 
+    # Largest cluster is usually (>99% of the time) filled with articles 
+    # that don't constitute an event, i.e. a "junk" cluster.
     clusters_for_each_window = remove_largest_cluster_of_each_window(clusters_for_each_window)
     
     return parse_into_events(clusters_for_each_window)

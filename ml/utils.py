@@ -3,20 +3,20 @@ from datetime import timedelta
 import numpy as np
 from sklearn.metrics import pairwise_distances_argmin_min
 
-def daterange(start_date, end_date, skip_delta=timedelta(days=1)):
-    for n in range(0, int((end_date - start_date).days), skip_delta.days):
+def daterange(start_date, end_date, step=timedelta(days=1)):
+    for n in range(0, int((end_date - start_date).days), step.days):
         yield start_date + timedelta(n)
 
-def partition_articles_into_clusters(articles, fitted_model):
+def partition_into_clusters(data, fitted_model):
     '''
     Given a DataFrame and a model fitted on that DataFrame, 
     returns a list of DataFrames, where each DataFrame contains 
-    articles of the same cluster, as labelled by the fitted_model.
+    data of the same cluster, as labelled by the fitted_model.
     '''
 
     labels = np.unique(fitted_model.labels_)
-    articles = [articles[fitted_model.labels_ == label] for label in labels]
-    return articles
+    data = [data[fitted_model.labels_ == label] for label in labels]
+    return data
 
 def remove_largest_cluster_of_each_window(clusters_for_each_window):
     '''
@@ -24,7 +24,6 @@ def remove_largest_cluster_of_each_window(clusters_for_each_window):
     is the DataFrame corresponding to the c-th cluster for the w-th window,
     remove the largest cluster from each window.
     '''
-    
     # Have to define custom helper function because remove(max(...)) raises
     # ValueError: Can only compare df with same index
     def remove_largest_df_in_list(dfs):
@@ -39,34 +38,31 @@ def remove_largest_cluster_of_each_window(clusters_for_each_window):
         remove_largest_df_in_list(clusters_for_window)
     return clusters_for_each_window
 
-def get_cluster_title(cluster):
+def get_event_title(event):
     '''
-    Given a DataFrame representing a cluster of articles (i.e. an event), 
-    Returns the title of that cluster (i.e. the title of the event).
+    Given an event (a DataFrame of articles),
+    Returns the title of that event.
     '''
-    
-    embeddings = [embedding for embedding in cluster.embeddings]
+    embeddings = [embedding for embedding in event.embeddings]
     mean_embedding = np.array([np.mean(embeddings, axis=0)])
     index = pairwise_distances_argmin_min(mean_embedding, embeddings)[0][0]
-    return cluster.title.iloc[index]
+    return event.title.iloc[index]
 
-def get_modal_date(cluster):
+def get_modal_date(event):
     '''
-    Given a DataFrame representing a cluster of articles, 
-    Returns the modal date of articles in that cluster.
+    Given an event (a DataFrame of articles),
+    Returns the modal date of articles in that event.
     '''
-
-    dates = cluster.date_published.dt.date
+    dates = event.date_published.dt.date
     return dates.mode()[0]
 
-def get_cluster_articles_as_dicts(cluster):
+def to_article_dicts(event):
     '''
     Given a DataFrame representing a cluster of articles, 
     Returns a list of dictionaries, where each dictionary is an article.
     '''
-
-    cluster = cluster.drop(columns=['body','embeddings'])  # Include all columns except body and embeddings
-    return cluster.to_dict('records')
+    event = event.drop(columns=['body', 'embeddings']) 
+    return event.to_dict('records')
 
 def parse_into_events(clusters_for_each_window):
     '''
@@ -74,8 +70,8 @@ def parse_into_events(clusters_for_each_window):
     is the DataFrame corresponding to the c-th cluster for the w-th window,
     Returns a list of events sorted by date, where each event is a dictionary:
     {
-        'event_name': string
-        'event_date': date
+        'name': string
+        'date': date
         'articles': [
             {
                 'title': string
@@ -86,13 +82,13 @@ def parse_into_events(clusters_for_each_window):
         ]
     }
     '''
-    
     events = []
     for window in clusters_for_each_window:
         for cluster in window:
-            events.append({
-                'event_name': get_cluster_title(cluster),
-                'event_date': get_modal_date(cluster), 
-                'articles': get_cluster_articles_as_dicts(cluster)
-            })
-    return sorted(events, key=lambda event : event['event_date'])
+            event = {
+                'name': get_event_title(cluster),
+                'date': get_modal_date(cluster).isoformat(), 
+                'articles': to_article_dicts(cluster)
+            }
+            events.append(event)
+    return sorted(events, key=lambda event : event['date'])
