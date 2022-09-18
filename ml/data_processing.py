@@ -24,7 +24,7 @@ def process_text_columns(df,
     df = df.dropna(subset=['snippet']) 
     df = df.dropna(subset=['body'])
     
-    # Remove articles that do not convey event information
+    # Remove articles that do not encapsulate one and only one event
     # (e.g. The Guardian's daily 'what we know on day x of the ukraine war' article series)
     mask = df.title.str.startswith(articles_to_remove)
     df = df[~mask] 
