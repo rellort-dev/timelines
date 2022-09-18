@@ -19,4 +19,4 @@ RUN apt-get update \
     && python3 -m pip install protobuf==3.20.1 --no-cache-dir \
     && apt-get purge -y --auto-remove gcc build-essential
 
-CMD uvicorn backend.main:app --reload
+CMD uvicorn backend.main:app --reload --port=$PORT --host=0.0.0.0
