@@ -24,12 +24,12 @@ GOOGLE_CLOUD_BUCKET_NAME = os.environ['GOOGLE_CLOUD_BUCKET_NAME']
 def get_articles_folder_name(is_dev_mode=IS_DEV_MODE):
     prefix = 'articles'
     suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
-    return f'{prefix}/{suffix}/'
+    return f'{prefix}/{suffix}'
 
 def get_timeline_folder_name(is_dev_mode=IS_DEV_MODE):
     prefix = 'timelines'
     suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
-    return f'{prefix}/{suffix}/'
+    return f'{prefix}/{suffix}'
 
 # CORS
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]

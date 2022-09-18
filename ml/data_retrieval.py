@@ -29,7 +29,7 @@ class Storage:
     def get_articles(self, file_name):
         assert file_name.endswith('.csv')
         
-        cloud_file_path = self.article_folder_name + file_name
+        cloud_file_path = f'{self.article_folder_name}/{file_name}'
         blob = self.bucket.blob(cloud_file_path)
         
         with TemporaryDirectory() as temp_dir:
@@ -44,7 +44,7 @@ class Storage:
     def save_articles(self, articles, file_name):
         assert file_name.endswith('.csv')
 
-        cloud_file_path = self.article_folder_name + file_name
+        cloud_file_path = f'{self.article_folder_name}/{file_name}'
         blob = self.bucket.blob(cloud_file_path)
 
         with TemporaryDirectory() as temp_dir:
@@ -56,7 +56,7 @@ class Storage:
     def get_timeline(self, file_name):
         assert file_name.endswith('.json')
 
-        cloud_file_path = self.timeline_folder_name + file_name
+        cloud_file_path = f'{self.timeline_folder_name}/{file_name}'
         blob = self.bucket.blob(cloud_file_path)
         
         with TemporaryDirectory() as temp_dir:
@@ -71,7 +71,7 @@ class Storage:
     def save_timeline(self, timeline, file_name):
         assert file_name.endswith('.json')
 
-        cloud_file_path = self.timeline_folder_name + file_name
+        cloud_file_path = f'{self.timeline_folder_name}/{file_name}'
         blob = self.bucket.blob(cloud_file_path) 
         
         with TemporaryDirectory() as temp_dir:
