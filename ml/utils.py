@@ -91,4 +91,4 @@ def parse_into_events(clusters_for_each_window):
                 'articles': to_article_dicts(cluster)
             }
             events.append(event)
-    return sorted(events, key=lambda event : event['date'])
+    return sorted(events, key=lambda event : event['date'], reverse=True)
