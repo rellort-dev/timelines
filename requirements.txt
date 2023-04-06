@@ -5,6 +5,7 @@ grequests~=0.6.0
 numpy~=1.23.0
 pandas~=1.4.2
 pydantic~=1.8.2
+python-dotenv==0.21.0
 PyYAML~=6.0
 regex~=2022.4.24
 scikit-learn~=1.1.1

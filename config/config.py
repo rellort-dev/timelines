@@ -3,7 +3,9 @@ import json
 import logging
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 IS_DEV_MODE = os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'
 
