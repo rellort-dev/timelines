@@ -1,15 +1,19 @@
+
+import grequests
 import json
 import logging
 import os
 import pandas as pd
-import grequests
-from tempfile import TemporaryDirectory
-from urllib import parse
+import validators
 from google.cloud import storage 
 from google.api_core.exceptions import NotFound
 from google.auth.exceptions import DefaultCredentialsError
+from tempfile import TemporaryDirectory
+from typing import List, Tuple
+from urllib import parse
 
 from config import config
+from backend.models import Article, Timeline
 
 class Storage:
     
@@ -53,7 +57,7 @@ class Storage:
                 articles.to_csv(temp_file_path, index=False)
                 blob.upload_from_filename(temp_file_path)
 
-    def get_timeline(self, file_name):
+    def get_timeline(self, file_name: str) -> Tuple[bool, Timeline]:
         assert file_name.endswith('.json')
 
         cloud_file_path = f'{self.timeline_folder_name}/{file_name}'
@@ -68,7 +72,7 @@ class Storage:
             with open(temp_file_path) as file:
                 return True, json.load(file)
 
-    def save_timeline(self, timeline, file_name):
+    def save_timeline(self, timeline: Timeline, file_name: str):
         assert file_name.endswith('.json')
 
         cloud_file_path = f'{self.timeline_folder_name}/{file_name}'
@@ -82,7 +86,21 @@ class Storage:
             blob.upload_from_filename(temp_file_path)
 
 
-def fetch_articles_from_news_api(search_term, sources):
+def remove_invalid_articles(articles):
+    result = []
+    for article in articles:
+        props_are_valid = [
+            validators.url(article["url"]),
+            validators.url(article["thumbnail_url"])
+        ]
+        if all(props_are_valid):
+            result.append(article)
+        else:
+            logging.warning(f"Invalid article returned from data source: {article['url']}")
+    return result
+
+
+def fetch_articles_from_news_api(search_term: str, sources: str) -> List[Article]:
     '''
     Fetch and return a DataFrame of news articles (maximum 100 articles per news source).
     Articles are all published within the last 30 days.
@@ -119,7 +137,10 @@ def fetch_articles_from_news_api(search_term, sources):
                 'body': result['content']
             })
     
-    logging.debug(f'Got {str(len(articles))} results in total.')
+    valid_articles = remove_invalid_articles(articles)
 
-    articles_df = pd.DataFrame.from_records(articles)
-    return articles_df
+    total_num_articles = len(articles)
+    num_invalid_articles = total_num_articles - len(valid_articles)
+    logging.debug(f'Got {total_num_articles} results in total. ({num_invalid_articles} invalid)')
+
+    return valid_articles

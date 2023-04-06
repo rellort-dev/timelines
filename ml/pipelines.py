@@ -1,17 +1,22 @@
 
 import pandas as pd
 from sklearn.cluster import OPTICS
+from typing import List
+
+from backend.models import Article
 from ml.data_processing import partition_data_into_windows, process_text_columns
 from ml.models import cluster_each_window, embed_text_column
 from ml.utils import parse_into_events, remove_largest_cluster_of_each_window
 
 
-def sliding_window_optics_pipeline(df):
+def sliding_window_optics_pipeline(articles: List[Article]):
     '''
     Processing: Lowercase all, only keep alphanumerical, combine all text columns.
     Embeddings: Spacy 
     Clustering algorithm: Sliding-window OPTICS 
     '''
+
+    df = pd.DataFrame.from_records(articles)
 
     if df.empty:
         return []

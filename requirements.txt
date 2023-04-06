@@ -14,3 +14,4 @@ spacy~=3.3.1
 spacy-legacy~=3.0.9
 spacy-loggers~=1.0.2
 uvicorn~=0.18.3
+validators~=0.20.0

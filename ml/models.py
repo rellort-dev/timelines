@@ -1,6 +1,5 @@
 import numpy as np
 import spacy
-from sklearn import clone
 from .utils import partition_into_clusters
 
 nlp = spacy.load('en_core_web_lg', 
