@@ -135,6 +135,7 @@ dmypy.json
 ml/experiments/
 /data
 demo.py
+/experiments
 
 # Developmet
 .dev_env_vars
