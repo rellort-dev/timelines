@@ -90,8 +90,8 @@ def remove_invalid_articles(articles):
     result = []
     for article in articles:
         props_are_valid = [
-            validators.url(article["url"]),
-            validators.url(article["thumbnail_url"])
+            validators.url(article["url"] if article["url"] else ""),
+            validators.url(article["thumbnail_url"] if article["thumbnail_url"] else "")
         ]
         if all(props_are_valid):
             result.append(article)
