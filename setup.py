@@ -1,3 +1,4 @@
+
 from pathlib import Path
 from setuptools import find_namespace_packages, setup
 
@@ -23,7 +24,7 @@ setup(
     packages=find_namespace_packages(),
     install_requires=[required_packages],
     extras_require={
-        'dev': test_packages, 
+        'dev': test_packages,
         'test': test_packages
     }
 )
