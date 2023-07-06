@@ -134,3 +134,9 @@ dmypy.json
 # Experiments
 ml/experiments/
 /data
+demo.py
+
+# Developmet
+.dev_env_vars
+google_application_credentials.json
+.vscode

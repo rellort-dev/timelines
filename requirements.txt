@@ -1,15 +1,14 @@
-en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.3.0/en_core_web_lg-3.3.0-py3-none-any.whl
 fastapi~=0.81.0
 google-cloud-storage~=2.4.0
 grequests~=0.6.0
 numpy~=1.23.0
 pandas~=1.4.2
 pydantic~=1.8.2
+python-dotenv==0.21.0
 PyYAML~=6.0
 regex~=2022.4.24
 scikit-learn~=1.1.1
 slowapi~=0.1.6
-spacy~=3.3.1
-spacy-legacy~=3.0.9
-spacy-loggers~=1.0.2
+sentence-transformers~=2.2.2
 uvicorn~=0.18.3
+validators~=0.20.0

@@ -1,9 +1,10 @@
-from datetime import datetime
 import json
 import logging
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 IS_DEV_MODE = os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'
 
@@ -17,19 +18,6 @@ FIXTURES_DIR = Path(TESTS_DIR, 'fixtures')
 
 # API Keys
 NEWS_API_KEY = os.environ['NEWS_API_KEY']
-
-# Google Cloud Storage
-GOOGLE_CLOUD_BUCKET_NAME = os.environ['GOOGLE_CLOUD_BUCKET_NAME']
-
-def get_articles_folder_name(is_dev_mode=IS_DEV_MODE):
-    prefix = 'articles'
-    suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
-    return f'{prefix}/{suffix}'
-
-def get_timeline_folder_name(is_dev_mode=IS_DEV_MODE):
-    prefix = 'timelines'
-    suffix = 'dev' if is_dev_mode else str(datetime.date(datetime.now()))
-    return f'{prefix}/{suffix}'
 
 # CORS
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
@@ -56,9 +44,13 @@ with open('config/contractions.json', 'r') as f:
 for contraction in list(CONTRACTION_MAP):
     CONTRACTION_MAP[contraction.replace("'", "’")] = CONTRACTION_MAP[contraction]
 
+# Cache
+CACHE_TABLE_NAME = os.environ['CACHE_TABLE_NAME']
+CACHE_TABLE_REGION = os.environ['CACHE_TABLE_REGION']
+CACHE_TABLE_KEY_PREFIX = os.environ['CACHE_TABLE_KEY_PREFIX']
+
 # Development settings
 
 if IS_DEV_MODE:
     ALLOWED_HOSTS = ['*']
     logging.basicConfig(level=logging.DEBUG)
-    GOOGLE_APPLICATION_CREDENTIALS = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
