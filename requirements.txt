@@ -1,5 +1,5 @@
 fastapi~=0.81.0
-google-cloud-storage~=2.4.0
+fastapi-cache2~=0.2.1
 grequests~=0.6.0
 numpy~=1.23.0
 pandas~=1.4.2
