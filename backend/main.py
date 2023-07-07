@@ -9,11 +9,18 @@ from fastapi_cache.decorator import cache
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
+import sentry_sdk
 
 from backend.models import Timeline
 from config import config
 from ml.data_retrieval import fetch_articles_from_news_api
 from ml.pipelines import sliding_window_optics_pipeline
+
+
+sentry_sdk.init(
+    dsn=config.SENTRY_DSN,
+    traces_sample_rate=config.SENTRY_SAMPLE_RATE
+)
 
 
 def build_key_on_query(

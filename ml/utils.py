@@ -1,11 +1,14 @@
+
 import copy
 from datetime import timedelta
 import numpy as np
 from sklearn.metrics import pairwise_distances_argmin_min
 
+
 def daterange(start_date, end_date, step=timedelta(days=1)):
     for n in range(0, int((end_date - start_date).days), step.days):
         yield start_date + timedelta(n)
+
 
 def partition_into_clusters(data, fitted_model):
     '''
@@ -17,6 +20,7 @@ def partition_into_clusters(data, fitted_model):
     labels = np.unique(fitted_model.labels_)
     data = [data[fitted_model.labels_ == label] for label in labels]
     return data
+
 
 def remove_largest_cluster_of_each_window(clusters_for_each_window):
     '''
@@ -32,11 +36,12 @@ def remove_largest_cluster_of_each_window(clusters_for_each_window):
             if len(dfs[i]) > len(dfs[largest_df_idx]):
                 largest_df_idx = i
         del dfs[largest_df_idx]
-        
+
     clusters_for_each_window = copy.deepcopy(clusters_for_each_window)
     for clusters_for_window in clusters_for_each_window:
         remove_largest_df_in_list(clusters_for_window)
     return clusters_for_each_window
+
 
 def get_event_title(event):
     '''
@@ -48,6 +53,7 @@ def get_event_title(event):
     index = pairwise_distances_argmin_min(mean_embedding, embeddings)[0][0]
     return event.title.iloc[index]
 
+
 def get_modal_date(event):
     '''
     Given an event (a DataFrame of articles),
@@ -56,13 +62,15 @@ def get_modal_date(event):
     dates = event.date_published.dt.date
     return dates.mode()[0]
 
+
 def to_article_dicts(event):
     '''
-    Given a DataFrame representing a cluster of articles, 
+    Given a DataFrame representing a cluster of articles,
     Returns a list of dictionaries, where each dictionary is an article.
     '''
-    event = event.drop(columns=['body', 'embeddings']) 
+    event = event.drop(columns=['body', 'embeddings'])
     return event.to_dict('records')
+
 
 def parse_into_events(clusters_for_each_window):
     '''
@@ -78,7 +86,7 @@ def parse_into_events(clusters_for_each_window):
                 'date_published': date
                 'url': string
                 'thumbnail_url': string
-            }, 
+            },
         ]
     }
     '''
@@ -91,4 +99,4 @@ def parse_into_events(clusters_for_each_window):
                 'articles': to_article_dicts(cluster)
             }
             events.append(event)
-    return sorted(events, key=lambda event : event['date'], reverse=True)
+    return sorted(events, key=lambda event: event['date'], reverse=True)

@@ -41,7 +41,7 @@ def fetch_articles_from_news_api(search_term: str, sources: str) -> List[Article
                 'language=en')
             for source in sources]
     responses = (grequests.get(url) for url in urls)
-    
+
     for response in grequests.imap(responses):
         if 'articles' not in response.json():
             message = 'Unable to fetch articles from source. Check your API key.'
@@ -59,7 +59,7 @@ def fetch_articles_from_news_api(search_term: str, sources: str) -> List[Article
                 'snippet': result['description'],
                 'body': result['content']
             })
-    
+
     valid_articles = remove_invalid_articles(articles)
 
     total_num_articles = len(articles)

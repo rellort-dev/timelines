@@ -14,7 +14,7 @@ def embed_articles(df):
     title_embeddings = sent_transformer.encode(list(df.title))
     body_embeddings = sent_transformer.encode(list(df.body))
     embeddings = (0.5 * title_embeddings) + (0.5 * body_embeddings)
-    
+
     torch.cuda.empty_cache()
     gc.collect()
 
@@ -32,7 +32,7 @@ def cluster_each_window(model, sliding_windows, keep_embeddings=False):
     for window in sliding_windows:
         x = np.stack(window.embeddings)
         model = model.fit(x)
-        
+
         if not keep_embeddings:
             window = window.drop(columns=['embeddings'])
 
