@@ -49,6 +49,10 @@ CACHE_TABLE_NAME = os.environ['CACHE_TABLE_NAME']
 CACHE_TABLE_REGION = os.environ['CACHE_TABLE_REGION']
 CACHE_TABLE_KEY_PREFIX = os.environ['CACHE_TABLE_KEY_PREFIX']
 
+# Sentry
+SENTRY_DSN = os.environ["SENTRY_DSN"]
+SENTRY_SAMPLE_RATE = 1.0
+
 # Development settings
 
 if IS_DEV_MODE:
