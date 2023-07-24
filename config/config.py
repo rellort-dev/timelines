@@ -45,6 +45,8 @@ for contraction in list(CONTRACTION_MAP):
     CONTRACTION_MAP[contraction.replace("'", "’")] = CONTRACTION_MAP[contraction]
 
 # Cache
+assert "AWS_ACCESS_KEY_ID" in os.environ
+assert "AWS_SECRET_ACCESS_KEY" in os.environ
 CACHE_TABLE_NAME = os.environ['CACHE_TABLE_NAME']
 CACHE_TABLE_REGION = os.environ['CACHE_TABLE_REGION']
 CACHE_TABLE_KEY_PREFIX = os.environ['CACHE_TABLE_KEY_PREFIX']
