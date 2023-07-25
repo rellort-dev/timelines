@@ -1,38 +1,45 @@
 
-import grequests  # Import first for monkey patching
-
+from datetime import datetime, timedelta
+import sentry_sdk
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.dynamodb import DynamoBackend
 from fastapi_cache.decorator import cache
-from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
-import sentry_sdk
 
-from backend.models import Timeline
-from config import config
-from ml.data_retrieval import fetch_articles_from_news_api
-from ml.pipelines import sliding_window_optics_pipeline
+import config
+from models import Timeline
+from news_client import MeilisearchNewsClient
+from pipelines import SlidingWindowOpticsPipeline
 
 
-sentry_sdk.init(
-    dsn=config.SENTRY_DSN,
-    traces_sample_rate=config.SENTRY_SAMPLE_RATE
-)
+# sentry_sdk.init(
+#     dsn=config.SENTRY_DSN,
+#     traces_sample_rate=config.SENTRY_SAMPLE_RATE
+# )
 
 
 def build_key_on_query(
     func, namespace: str = "", request: Request = None,
     response: Response = None, *args, **kwargs
-):
+) -> str:
     return ":".join([
         namespace,
         request.method.lower(),
         request.url.path,
         repr(sorted(request.query_params.items()))
     ])
+
+
+news_client = MeilisearchNewsClient(
+    meilisearch_url=config.MEILISEARCH_URL,
+    meilisearch_key=config.MEILISEARCH_KEY,
+    index_name="articles",
+)
+pipeline = SlidingWindowOpticsPipeline()
 
 
 limiter = Limiter(key_func=get_remote_address)
@@ -51,8 +58,14 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 @cache(expire=60*60*12, key_builder=build_key_on_query)
 @limiter.limit('1/second')
 async def get_timeline(request: Request, q: str):
-    articles = fetch_articles_from_news_api(q, sources=config.SOURCES)
-    events = sliding_window_optics_pipeline(articles)
+    today = datetime.now()
+    two_weeks_ago = today - timedelta(days=14)
+    embedded_articles = news_client.fetch_news(
+        query=q,
+        before=today,
+        after=two_weeks_ago,
+    )
+    events = pipeline.generate_events(articles=embedded_articles)
     timeline = {'events': events}
     return timeline
 

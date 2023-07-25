@@ -133,7 +133,6 @@ dmypy.json
 
 # Experiments
 ml/experiments/
-/data
 demo.py
 /experiments
 

@@ -1,0 +1,11 @@
+[project]
+name = "timelines"
+description = "Timelines"
+requires-python = ">=3.9"
+version = "0.0.3"
+
+
+[tool.black]
+line-length = 120
+target_version = ['py39']
+include = '\.pyi?$'
