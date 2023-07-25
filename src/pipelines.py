@@ -30,7 +30,7 @@ class SlidingWindowOpticsPipeline(AbstractPipeline):
                 event = {
                     'name': get_event_title(cluster),
                     'date': get_modal_date(cluster).isoformat(),
-                    'articles': cluster.drop(columns=['body', 'embeddings']).to_dict('records')
+                    'articles': cluster.drop(columns=['embeddings']).to_dict('records')
                 }
                 events.append(event)
         return events
