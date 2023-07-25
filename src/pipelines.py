@@ -45,6 +45,7 @@ class SlidingWindowOpticsPipeline(AbstractPipeline):
         df.date_published = pd.to_datetime(df.date_published)
 
         sliding_windows = partition_into_windows(df, 1, 3)
+        sliding_windows = [window for window in sliding_windows if len(window) > 2]
 
         min_samples = 2 if len(df) < 200 else 3
         optics = OPTICS(min_samples=min_samples, xi=0.05)
