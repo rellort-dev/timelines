@@ -1,33 +1,21 @@
 from __future__ import annotations
 
-import logging
 import os
+import boto3
+import logging
 
-from dotenv import load_dotenv
 
-load_dotenv()
+session = boto3.session.Session()
+client = session.client(
+    service_name='secretsmanager',
+    region_name=os.environ["AWS_REGION"]
+)
 
-IS_DEV_MODE = os.environ.get("TIMELINES_DEVELOPMENT_MODE") == "true"
+MEILISEARCH_URL = client.get_secret_value(SecretId="MEILISEARCH_URL")["SecretString"]
+MEILISEARCH_KEY = client.get_secret_value(SecretId="MEILISEARCH_KEY")["SecretString"]
 
-# Meilisearch
-MEILISEARCH_URL = os.environ["MEILISEARCH_URL"]
-MEILISEARCH_KEY = os.environ["MEILISEARCH_KEY"]
-
-# CORS
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST")]
-
-# Cache
-assert "AWS_ACCESS_KEY_ID" in os.environ
-assert "AWS_SECRET_ACCESS_KEY" in os.environ
-CACHE_TABLE_NAME = os.environ["CACHE_TABLE_NAME"]
-CACHE_TABLE_REGION = os.environ["CACHE_TABLE_REGION"]
-CACHE_TABLE_KEY_PREFIX = os.environ["CACHE_TABLE_KEY_PREFIX"]
-
-# Sentry
-SENTRY_DSN = os.environ["SENTRY_DSN"]
-SENTRY_SAMPLE_RATE = 1.0
-
-# Development settings
-if IS_DEV_MODE:
-    ALLOWED_HOSTS = ["*"]
-    logging.basicConfig(level=logging.DEBUG)
+if logging.getLogger().hasHandlers():
+    logging.getLogger().setLevel(logging.INFO)
+else:
+    logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
