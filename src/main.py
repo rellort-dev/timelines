@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from datetime import timedelta
+import json
 
 import boto3
 import config
@@ -56,7 +57,7 @@ def create_response(timeline: Timeline) -> dict:
             "Content-Type": "application/json",
         },
         "isBase64Encoded": False,
-        "body": timeline.model_dump(mode="json"),
+        "body": json.dumps(timeline.model_dump(mode="json")),
     }
 
 
