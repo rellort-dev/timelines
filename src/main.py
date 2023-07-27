@@ -51,7 +51,7 @@ def create_response(timeline: Timeline) -> dict:
     }
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     logger.info("Lambda invoked. Getting query string.")
     query = get_query_string(event)
 
