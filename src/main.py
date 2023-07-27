@@ -48,7 +48,7 @@ def create_response(timeline: Timeline) -> dict:
             "Content-Type": "application/json",
         },
         "isBase64Encoded": False,
-        "body": timeline,
+        "body": timeline.model_dump(mode="json"),
     }
 
 
