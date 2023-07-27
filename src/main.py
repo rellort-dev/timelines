@@ -3,12 +3,14 @@ from __future__ import annotations
 from datetime import datetime
 from datetime import timedelta
 
+import boto3
 import config
+from cache import DynamoDBCache
 from config import logger
 from models import Timeline
 from news_client import MeilisearchNewsClient
 from pipelines import SlidingWindowOpticsPipeline
-from utils import store_locally
+from utils import store_locally, build_key_on_query
 
 
 news_client = MeilisearchNewsClient(
@@ -17,8 +19,15 @@ news_client = MeilisearchNewsClient(
     index_name="articles",
 )
 pipeline = SlidingWindowOpticsPipeline()
+dynamodb_client = boto3.client("dynamodb", region_name=config.AWS_REGION)
+dynamodb_cache = DynamoDBCache(
+    dynamodb_client=dynamodb_client,
+    table_name=config.DYNAMODB_TABLE_NAME,
+)
 
 
+
+@dynamodb_cache.cache(key_builder=build_key_on_query, ttl=4 * 60 * 60)
 def get_timeline(query: str) -> Timeline:
     today = datetime.now()
     two_weeks_ago = today - timedelta(days=14)
@@ -72,7 +81,7 @@ if __name__ == "__main__":
         help="Query string",
     )
     args = vars(parser.parse_args())
-    query = args.get("query")
+    query = str(args.get("query"))
 
     timeline = get_timeline(query)
     store_locally(timeline, query)

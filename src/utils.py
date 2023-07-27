@@ -1,18 +1,17 @@
 from __future__ import annotations
 
 import copy
+import json
+import os
 from datetime import date
 from datetime import timedelta
 from pathlib import Path
-import json
-import os
 
 import numpy as np
+from models import Timeline
 from pandas import DataFrame
 from sklearn.base import BaseEstimator
 from sklearn.metrics import pairwise_distances_argmin_min
-
-from models import Timeline
 
 
 def daterange(start: date, end: date, step: timedelta = timedelta(days=1)):
@@ -133,3 +132,7 @@ def store_locally(timeline: Timeline, query: str) -> None:
     results_file = os.path.join(results_dir, filename)
     with open(results_file, "w") as f:
         json.dump(timeline.model_dump(mode="json"), f, indent=4)
+
+
+def build_key_on_query(query: str) -> str:
+    return f"timeline-{query}"
