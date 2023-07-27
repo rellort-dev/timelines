@@ -59,4 +59,4 @@ class SlidingWindowOpticsPipeline(AbstractPipeline):
         clusters_for_each_window = remove_largest_cluster_of_each_window(clusters_for_each_window)
 
         events = self._parse_into_events(clusters_for_each_window)
-        return sorted(events, key=lambda event: event["date"], reverse=True)
+        return sorted(events, key=lambda event: event.date, reverse=True)

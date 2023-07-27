@@ -19,7 +19,7 @@ news_client = MeilisearchNewsClient(
 pipeline = SlidingWindowOpticsPipeline()
 
 
-def get_timeline(query: str):
+def get_timeline(query: str) -> Timeline:
     today = datetime.now()
     two_weeks_ago = today - timedelta(days=14)
 
@@ -32,7 +32,7 @@ def get_timeline(query: str):
 
     logger.info("Generating events")
     events = pipeline.generate_events(articles=embedded_articles)
-    timeline = {"events": events}
+    timeline = Timeline(events=events)
     return timeline
 
 
