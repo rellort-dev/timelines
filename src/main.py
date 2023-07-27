@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 
 import config
+from config import logger
 from models import Timeline
 from news_client import MeilisearchNewsClient
 from pipelines import SlidingWindowOpticsPipeline
@@ -21,11 +22,15 @@ pipeline = SlidingWindowOpticsPipeline()
 def get_timeline(query: str):
     today = datetime.now()
     two_weeks_ago = today - timedelta(days=14)
+
+    logger.info(f"Fetching news articles for {query} in range [{two_weeks_ago}, {today}]")
     embedded_articles = news_client.fetch_news(
         query=query,
         before=today,
         after=two_weeks_ago,
     )
+
+    logger.info("Generating events")
     events = pipeline.generate_events(articles=embedded_articles)
     timeline = {"events": events}
     return timeline
@@ -47,9 +52,11 @@ def create_response(timeline: Timeline) -> dict:
 
 
 def lambda_handler(event):
-    logging.log("Lambda invoked. Getting query string.")
+    logger.info("Lambda invoked. Getting query string.")
     query = get_query_string(event)
-    logging.log("Getting timeline.")
+
+    logger.info("Getting timeline.")
     timeline = get_timeline(query)
-    logging.log("Creating response.")
+
+    logger.info("Creating response.")
     return create_response(timeline)
