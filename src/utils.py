@@ -3,11 +3,16 @@ from __future__ import annotations
 import copy
 from datetime import date
 from datetime import timedelta
+from pathlib import Path
+import json
+import os
 
 import numpy as np
 from pandas import DataFrame
 from sklearn.base import BaseEstimator
 from sklearn.metrics import pairwise_distances_argmin_min
+
+from models import Timeline
 
 
 def daterange(start: date, end: date, step: timedelta = timedelta(days=1)):
@@ -118,3 +123,13 @@ def get_modal_date(event: DataFrame) -> date:
     """Returns the modal date of articles in that event"""
     dates = event.date_published.dt.date
     return dates.mode()[0]
+
+
+def store_locally(timeline: Timeline, query: str) -> None:
+    results_dir = Path("../.results")
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    filename = query.replace(" ", "_") + ".json"
+    results_file = os.path.join(results_dir, filename)
+    with open(results_file, "w") as f:
+        json.dump(timeline.model_dump(mode="json"), f, indent=4)

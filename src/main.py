@@ -9,6 +9,7 @@ from config import logger
 from models import Timeline
 from news_client import MeilisearchNewsClient
 from pipelines import SlidingWindowOpticsPipeline
+from utils import store_locally
 
 
 news_client = MeilisearchNewsClient(
@@ -62,3 +63,19 @@ def lambda_handler(event, context):
 
     logger.info("Creating response.")
     return create_response(timeline)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-q",
+        "--query",
+        help="Query string",
+    )
+    args = vars(parser.parse_args())
+    query = args.get("query")
+
+    timeline = get_timeline(query)
+    store_locally(timeline, query)
