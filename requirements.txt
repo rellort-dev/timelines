@@ -3,7 +3,7 @@ boto3~=1.26.161
 meilisearch~=0.23.0
 numpy~=1.23.0
 pandas~=1.4.2
-pydantic~=1.8.2
+pydantic~=2.1.1
 python-dotenv==0.21.0
 scikit-learn~=1.1.1
 sentence-transformers~=2.2.2
