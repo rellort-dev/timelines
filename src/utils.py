@@ -1,10 +1,13 @@
+from __future__ import annotations
 
 import copy
-from datetime import timedelta, date
+from datetime import date
+from datetime import timedelta
+
 import numpy as np
-from sklearn.metrics import pairwise_distances_argmin_min
-from sklearn.base import BaseEstimator
 from pandas import DataFrame
+from sklearn.base import BaseEstimator
+from sklearn.metrics import pairwise_distances_argmin_min
 
 
 def daterange(start: date, end: date, step: timedelta = timedelta(days=1)):
@@ -15,9 +18,9 @@ def daterange(start: date, end: date, step: timedelta = timedelta(days=1)):
 def partition_into_windows(
     articles_df: DataFrame,
     window_delta: int = 0,
-    step: int = 1
+    step: int = 1,
 ) -> list[DataFrame]:
-    '''
+    """
     Partitions the dataframe into windows of articles
     published within [day - window_delta, day + window_delta]
 
@@ -27,7 +30,7 @@ def partition_into_windows(
     window_delta=1, step=1 --> [3-5, 4-6, 5-7, ...]
     window_delta=2, step=1 --> [2-6, 3-7, 4-8, ...]
     window_delta=0, step=2 --> [4-4, 6-6, 8-8, ...]
-    '''
+    """
 
     windows = []
 
@@ -35,12 +38,16 @@ def partition_into_windows(
     start_date = articles_df.date_published.dt.date.min()
     end_date = articles_df.date_published.dt.date.max()
 
-    for d in daterange(start_date + window_size,
-                       end_date - window_size + timedelta(days=1),
-                       timedelta(days=step)):
+    for d in daterange(
+        start_date + window_size,
+        end_date - window_size + timedelta(days=1),
+        timedelta(days=step),
+    ):
         lower_bound = d - window_size
         upper_bound = d + window_size
-        is_within_window = (lower_bound <= articles_df.date_published.dt.date) & (articles_df.date_published.dt.date <= upper_bound)
+        is_within_window = (lower_bound <= articles_df.date_published.dt.date) & (
+            articles_df.date_published.dt.date <= upper_bound
+        )
         data_within_window = articles_df[is_within_window]
         windows.append(data_within_window)
 
@@ -49,9 +56,9 @@ def partition_into_windows(
 
 def partition_into_clusters(
     data: DataFrame,
-    fitted_clustering_model: BaseEstimator
+    fitted_clustering_model: BaseEstimator,
 ) -> list[DataFrame]:
-    '''Splits the DataFrame based on the labels assigned by the fitted model'''
+    """Splits the DataFrame based on the labels assigned by the fitted model"""
 
     unique_labels = np.unique(fitted_clustering_model.labels_)
     data = [data[fitted_clustering_model.labels_ == label] for label in unique_labels]
@@ -62,7 +69,7 @@ def cluster_each_window(
     model: BaseEstimator,
     sliding_windows: list[DataFrame],
 ) -> list[list[DataFrame]]:
-    '''Clusters each window using the provided model'''
+    """Clusters each window using the provided model"""
 
     clusters_for_each_window = []
     for window_df in sliding_windows:
@@ -74,7 +81,7 @@ def cluster_each_window(
 
 
 def remove_largest_cluster_of_each_window(
-    clusters_for_each_window: list[list[DataFrame]]
+    clusters_for_each_window: list[list[DataFrame]],
 ) -> list[list[DataFrame]]:
     """
     Removes the largest cluster within each window. The largest cluster is usually

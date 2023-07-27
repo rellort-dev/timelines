@@ -1,16 +1,18 @@
+from __future__ import annotations
+
+from abc import ABC
+from abc import abstractmethod
 
 import pandas as pd
-from abc import ABC, abstractmethod
+from models import Article
+from models import EmbeddedArticle
+from models import Event
 from sklearn.cluster import OPTICS
-
-from models import EmbeddedArticle, Event
-from utils import (
-    get_event_title,
-    get_modal_date,
-    remove_largest_cluster_of_each_window,
-    partition_into_windows,
-    cluster_each_window,
-)
+from utils import cluster_each_window
+from utils import get_event_title
+from utils import get_modal_date
+from utils import partition_into_windows
+from utils import remove_largest_cluster_of_each_window
 
 
 class AbstractPipeline(ABC):
@@ -22,16 +24,17 @@ class AbstractPipeline(ABC):
 
 
 class SlidingWindowOpticsPipeline(AbstractPipeline):
-
     def _parse_into_events(self, clusters_for_each_window: list[list[pd.DataFrame]]) -> list[Event]:
         events = []
         for window in clusters_for_each_window:
             for cluster in window:
-                event = {
-                    'name': get_event_title(cluster),
-                    'date': get_modal_date(cluster).isoformat(),
-                    'articles': cluster.drop(columns=['embeddings']).to_dict('records')
-                }
+                article_dicts = cluster.drop(columns=["embeddings"]).to_dict("records")
+                articles = [Article(**article_dict) for article_dict in article_dicts]
+                event = Event(
+                    name=get_event_title(cluster),
+                    date=get_modal_date(cluster).isoformat(),
+                    articles=articles,
+                )
                 events.append(event)
         return events
 
@@ -56,4 +59,4 @@ class SlidingWindowOpticsPipeline(AbstractPipeline):
         clusters_for_each_window = remove_largest_cluster_of_each_window(clusters_for_each_window)
 
         events = self._parse_into_events(clusters_for_each_window)
-        return sorted(events, key=lambda event: event['date'], reverse=True)
+        return sorted(events, key=lambda event: event["date"], reverse=True)

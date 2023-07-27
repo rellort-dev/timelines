@@ -1,9 +1,11 @@
+from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from datetime import date, datetime
+from abc import ABC
+from abc import abstractmethod
+from datetime import datetime
+
 from meilisearch import Client
-
-from models import EmbeddedArticle, Event
+from models import EmbeddedArticle
 
 
 class AbstractNewsClient(ABC):
@@ -15,21 +17,23 @@ class AbstractNewsClient(ABC):
 
 
 class MeilisearchNewsClient(AbstractNewsClient):
-
     def __init__(
         self,
         meilisearch_url: str,
         meilisearch_key: str,
-        index_name: str
+        index_name: str,
     ) -> None:
         self.meilisearch_client = Client(meilisearch_url, meilisearch_key)
         self.index = self.meilisearch_client.index(index_name)
 
     def fetch_news(self, query: str, before: datetime, after: datetime) -> list[EmbeddedArticle]:
-        response = self.index.search(query, {
-            "filter": f"publishedTime >= {after.timestamp()} AND publishedTime < {before.timestamp()}",
-            "limit": 1000,
-        })
+        response = self.index.search(
+            query,
+            {
+                "filter": f"publishedTime >= {after.timestamp()} AND publishedTime < {before.timestamp()}",
+                "limit": 1000,
+            },
+        )
         documents = response["hits"]
         full_articles = [
             EmbeddedArticle(

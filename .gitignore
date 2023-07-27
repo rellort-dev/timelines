@@ -139,3 +139,7 @@ demo.py
 # Developmet
 .dev_env_vars
 .vscode
+
+# Terraform
+*/.terraform*
+*.tfstate*

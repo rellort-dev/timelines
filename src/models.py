@@ -1,4 +1,8 @@
-from datetime import date, datetime
+from __future__ import annotations
+
+from datetime import date  # noqa: F401
+from datetime import datetime
+
 from pydantic import BaseModel
 from pydantic import HttpUrl
 
