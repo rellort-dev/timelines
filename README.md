@@ -1,6 +1,6 @@
 # readtimelines.com
 
-![Screenshot](images/screenshot.png)
+!["Screenshot"](images/screenshot.png)
 
 # How it works
 
