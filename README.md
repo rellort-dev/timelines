@@ -34,7 +34,7 @@
           "publishedTime": 1683157315,
           "source": "reuters.com",
           "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]
-      },
+      }
   ]
   ```
 
@@ -102,7 +102,7 @@
                       "thumbnail_url": "https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/07/29/IMGsea11623C77K.jpg",
                       "date_published": "2023-07-29T05:17:00",
                       "snippet": "In Japan's annual defence paper, it offered a gloomy assessment of the threat of China’s territorial ambitions. Read more at straitstimes.com."
-                  },
+                  }
               ]
           }
       ]
