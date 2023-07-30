@@ -12,33 +12,33 @@
 
 - Here's what the news articles look like (embeddings truncated for ease of viewing):
   
-  ```json
-  [
-      {
-          "title": "China hopes France can help take heat out of relations with EU",
-          "description": "China hopes France can \"stabilise the tone\" of EU-China relations, vice-premier He Lifeng told his French counterpart in Beijing on ...",
-          "content": "BEIJING, July 29  - China hopes France can \"stabilise the tone\" of EU-China relations, vice-premier He Lifeng told his French counterpart...","
-          "thumbnailUrl": "https://www.reuters.com/resizer/HJFF_pY0mp8L296eXv2plFEmbps=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/4BPRNBPSYJMJZL5OH7MMETNYM4.jpg",
-          "url": "https://www.reuters.com/world/china-hopes-france-can-help-take-heat-out-relations-with-eu-2023-07-29/",
-          "publishedTime": 1690622421,
-          "source": "reuters.com",
-          "embeddings": [-0.06358712911605835, -0.001011253334581852, -0.012027012184262276]
-      },
-      {
-         "title": "Japan names China its greatest strategic challenge",
-          "description": "Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on defence approved on Friday by the government of Japanese Prime Minister Fumio Kishida.",
-          "uuid": "91bc847b-9e9d-497f-9de4-d22b219390be",
-          "content": "TOKYO : Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on def...",
-  
-          "thumbnailUrl": "https://www.reuters.com/resizer/Cr0DMOyD_IkT6hcOsRTU8xtbE5g=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/RNAKI34TPRIRDNFWTIZYWDRUIA.jpg",
-          "url": "https://www.reuters.com/business/aerospace-defense/china-us-boost-passenger-airline-flights-usdot-2023-05-03/",
-          "publishedTime": 1683157315,
-          "source": "reuters.com",
-          "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]
-      }
-  
-  ]
-  ```
+```json
+[
+    {
+        "title": "China hopes France can help take heat out of relations with EU",
+        "description": "China hopes France can \"stabilise the tone\" of EU-China relations, vice-premier He Lifeng told his French counterpart in Beijing on ...",
+        "content": "BEIJING, July 29  - China hopes France can \"stabilise the tone\" of EU-China relations, vice-premier He Lifeng told his French counterpart...","
+        "thumbnailUrl": "https://www.reuters.com/resizer/HJFF_pY0mp8L296eXv2plFEmbps=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/4BPRNBPSYJMJZL5OH7MMETNYM4.jpg",
+        "url": "https://www.reuters.com/world/china-hopes-france-can-help-take-heat-out-relations-with-eu-2023-07-29/",
+        "publishedTime": 1690622421,
+        "source": "reuters.com",
+        "embeddings": [-0.06358712911605835, -0.001011253334581852, -0.012027012184262276]
+    },
+    {
+        "title": "Japan names China its greatest strategic challenge",
+        "description": "Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on defence approved on Friday by the government of Japanese Prime Minister Fumio Kishida.",
+        "uuid": "91bc847b-9e9d-497f-9de4-d22b219390be",
+        "content": "TOKYO : Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on def...",
+
+        "thumbnailUrl": "https://www.reuters.com/resizer/Cr0DMOyD_IkT6hcOsRTU8xtbE5g=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/RNAKI34TPRIRDNFWTIZYWDRUIA.jpg",
+        "url": "https://www.reuters.com/business/aerospace-defense/china-us-boost-passenger-airline-flights-usdot-2023-05-03/",
+        "publishedTime": 1683157315,
+        "source": "reuters.com",
+        "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]
+    }
+
+]
+```
   
   **Embeddings**
 
