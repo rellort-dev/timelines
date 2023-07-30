@@ -8,7 +8,7 @@
 
 - Our news data is kept in a Meilisearch instance, which is a lightweight fulltext search engine originally designed for fast client-facing search. However, our scale and speed requirements fit Meilisearch perfectly, and it's lightweight nature helps us to save on cost. We host our Meilisearch instance on DigitalOcean.
 
-- Here's what the news articles look like:
+- Here's what the news articles look like (embeddings truncated for ease of viewing):
   
   ```json
   [
@@ -20,7 +20,7 @@
           "url": "https://www.reuters.com/world/china-hopes-france-can-help-take-heat-out-relations-with-eu-2023-07-29/",
           "publishedTime": 1690622421,
           "source": "reuters.com",
-          "embeddings": [-0.06358712911605835, -0.001011253334581852, -0.012027012184262276]  // 297 more floats
+          "embeddings": [-0.06358712911605835, -0.001011253334581852, -0.012027012184262276]
       },
       {
          "title": "Japan names China its greatest strategic challenge",
@@ -33,9 +33,8 @@
           "url": "https://www.reuters.com/business/aerospace-defense/china-us-boost-passenger-airline-flights-usdot-2023-05-03/",
           "publishedTime": 1683157315,
           "source": "reuters.com",
-          "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]  // 297 more floats
+          "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]
       },
-      // ...
   ]
   ```
 
@@ -84,7 +83,6 @@
                       "date_published": "2023-07-30T05:43:02",
                       "snippet": "The French finance minister says he pressed Chinese leaders to open their markets wider to foreign companies"
                   }
-                  // ...
               ]
           },
           {
@@ -105,10 +103,8 @@
                       "date_published": "2023-07-29T05:17:00",
                       "snippet": "In Japan's annual defence paper, it offered a gloomy assessment of the threat of China’s territorial ambitions. Read more at straitstimes.com."
                   },
-                  // ...
               ]
           }
-          // ...
       ]
   }
   ```
