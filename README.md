@@ -99,13 +99,13 @@
                   {
                       "title": "Foreign ships, aircraft in East and South China Seas escalating tensions: China's defence ministry",
                       "url": "https://www.straitstimes.com/asia/east-asia/foreign-ships-aircraft-in-east-and-south-china-seas-escalating-tensions-chinas-defence-ministry",
-                      "thumbnail_url": "https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/07/29/IMGsea11623C77K.jpg",,
+                      "thumbnail_url": "https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2023/07/29/IMGsea11623C77K.jpg",
                       "date_published": "2023-07-29T05:17:00",
                       "snippet": "In Japan's annual defence paper, it offered a gloomy assessment of the threat of China’s territorial ambitions. Read more at straitstimes.com."
                   }
-              ]
-          }
-      ]
+              ]
+          }
+      ]
   }
   ```
 
