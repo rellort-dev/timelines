@@ -1,7 +1,5 @@
 # readtimelines.com
 
-!["Screenshot"](images/screenshot.png)
-
 # How it works
 
 **Data Source**
@@ -11,7 +9,7 @@
 - Our news data is kept in a Meilisearch instance, which is a lightweight fulltext search engine originally designed for fast client-facing search. However, our scale and speed requirements fit Meilisearch perfectly, and it's lightweight nature helps us to save on cost. We host our Meilisearch instance on DigitalOcean.
 
 - Here's what the news articles look like (embeddings truncated for ease of viewing):
-
+  
   ```json
   [
       {
@@ -29,23 +27,22 @@
           "description": "Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on defence approved on Friday by the government of Japanese Prime Minister Fumio Kishida.",
           "uuid": "91bc847b-9e9d-497f-9de4-d22b219390be",
           "content": "TOKYO : Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on def...",
-  ```
-
+  
           "thumbnailUrl": "https://www.reuters.com/resizer/Cr0DMOyD_IkT6hcOsRTU8xtbE5g=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/RNAKI34TPRIRDNFWTIZYWDRUIA.jpg",
           "url": "https://www.reuters.com/business/aerospace-defense/china-us-boost-passenger-airline-flights-usdot-2023-05-03/",
           "publishedTime": 1683157315,
           "source": "reuters.com",
           "embeddings": [0.009848859161138536, -0.0479600615799427, 0.010806463658809662]
       }
-
+  
   ]
 
-````
+```
 **Embeddings**
 
 - An *embedding* is a real-value vector that represents the semantic meaning of a piece of text. In our case, we use a 300-D vector of floats to represent the semantic meaning of each article, i.e. 300-D *article embeddings*.
 
-- Our embeddings are generated using `all-MiniLM-L6-v2`, which provides a good balance between performance and hardware requirements/speed.
+- Our embeddings are generated using `all-MiniLM-L6-v2`, which provides a good balance between performance and hardware requirements/speed. 
 
 - Each article's embedding is the weighted sum of the title's and description's embeddings. The weightage was empirically determined.
 
@@ -59,7 +56,7 @@
 
 - We take these articles and cluster their embeddings via an unsupervised clustering algorithm ([OPTICS](https://en.wikipedia.org/wiki/OPTICS_algorithm)), with a sliding window.
 
-- The articles within a cluster are semantically related, hence they are likely describing the same events. We prune the junk clusters (clusters that don't represent an independent event), and serve the rest as *events*.
+- The articles within a cluster are semantically related, hence they are likely describing the same events. We prune the junk clusters (clusters that don't represent an independent event), and serve the rest as *events*. 
 
 - These events are then sorted chronologically to form a *timeline*: this is what you queried for!
 
@@ -108,7 +105,7 @@
         }
     ]
 }
-````
+```
 
 **Making it fast, cheap, and reliable**
 
