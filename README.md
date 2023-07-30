@@ -1,4 +1,4 @@
-# readtimelines.com
+# Timelines
 
 !["Screenshot"](images/screenshot.png)
 
