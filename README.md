@@ -56,7 +56,7 @@
 
 - When you send a query to readtimelines.com, our server first searches the fulltext search engine for relevant articles published recently.
 
-- We take these articles and cluster their embeddings via an unsupervised learning algorithms ([OPTICS](https://en.wikipedia.org/wiki/OPTICS_algorithm)), with a sliding window.
+- We take these articles and cluster their embeddings via an unsupervised clustering algorithm ([OPTICS](https://en.wikipedia.org/wiki/OPTICS_algorithm)), with a sliding window.
 
 - The articles within a cluster are semantically related, hence they are likely describing the same events. We prune the junk clusters (clusters that don't represent an independent event), and serve the rest as *events*. 
 
