@@ -1,5 +1,5 @@
 # readtimelines.com
-
+!["Screenshot"](images/screenshot.png)
 # How it works
 
 **Data Source**
