@@ -1,5 +1,7 @@
 # readtimelines.com
+
 !["Screenshot"](images/screenshot.png)
+
 # How it works
 
 **Data Source**
@@ -36,9 +38,9 @@
       }
   
   ]
-
-```
-**Embeddings**
+  ```
+  
+  **Embeddings**
 
 - An *embedding* is a real-value vector that represents the semantic meaning of a piece of text. In our case, we use a 300-D vector of floats to represent the semantic meaning of each article, i.e. 300-D *article embeddings*.
 
@@ -47,8 +49,6 @@
 - Each article's embedding is the weighted sum of the title's and description's embeddings. The weightage was empirically determined.
 
 - All our embeddings are precomputed and saved in the fulltext search engine, ready to serve queries.
-
-
 
 **Forming events from articles**
 
