@@ -121,7 +121,7 @@
 
 - We decided to run the backend on a Digital Ocean droplet, which is moderately powerful at a low price. To save on cost, the droplet is shared with the data pipeline, and pm2 is used to manage the processes.
 
-- Overall, the total cost for running a ~100k article fulltext search engine + data pipeline + production ML inference API is around 25 USD. 
+- Overall, the total cost for running a ~100k article fulltext search engine + data pipeline + API with ML inference is around 25 USD. Pretty good!
 
 
 
