@@ -108,7 +108,9 @@
 
 **Making it fast, cheap, and reliable**
 
-- Serverless wasn't an option — we had to choose between dealing with weak CPUs, cold starts, or high prices
+- Recently queried articles are cached on DynamoDB.
+
+- In terms of architecture, serverless wasn't an option — we had to choose between dealing with weak CPUs, cold starts, or high prices
 
 - We decided to run the backend on a Digital Ocean droplet, which is moderately powerful at a low price. To save on cost, the droplet is shared with the data pipeline, and pm2 is used to manage the processes.
 
