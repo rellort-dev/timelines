@@ -36,7 +36,7 @@ class MeilisearchNewsClient(AbstractNewsClient):
             EmbeddedArticle(
                 title=doc["title"],
                 url=doc["url"],
-                thumbnail_url=getattr(doc, "thumbnailUrl", config.DEFAULT_IMAGE_URL),
+                thumbnail_url=doc["thumbnailUrl"] if "thumbnailUrl" in doc else config.DEFAULT_IMAGE_URL,
                 date_published=datetime.fromtimestamp(doc["publishedTime"]),
                 snippet=doc["description"],
                 embeddings=doc["embeddings"],
