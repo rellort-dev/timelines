@@ -16,22 +16,10 @@ from news_client import MeilisearchNewsClient
 from pipelines import SlidingWindowOpticsPipeline
 
 
-# sentry_sdk.init(
-#     dsn=config.SENTRY_DSN,
-#     traces_sample_rate=config.SENTRY_SAMPLE_RATE
-# )
-
-
-def build_key_on_query(
-    func, namespace: str = "", request: Request = None,
-    response: Response = None, *args, **kwargs
-) -> str:
-    return ":".join([
-        namespace,
-        request.method.lower(),
-        request.url.path,
-        repr(sorted(request.query_params.items()))
-    ])
+sentry_sdk.init(
+    dsn=config.SENTRY_DSN,
+    traces_sample_rate=config.SENTRY_SAMPLE_RATE
+)
 
 
 news_client = MeilisearchNewsClient(
@@ -55,7 +43,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.get("/timeline", response_model=Timeline)
-@cache(expire=60*60*12, key_builder=build_key_on_query)
+@cache(expire=60*60*12)
 @limiter.limit('1/second')
 async def get_timeline(request: Request, q: str):
     today = datetime.now()
@@ -77,4 +65,4 @@ async def startup():
         region=config.CACHE_TABLE_REGION,
     )
     await dynamodb.init()
-    FastAPICache.init(dynamodb, prefix=config.CACHE_TABLE_KEY_PREFIX)
+    FastAPICache.init(dynamodb, prefix="")
