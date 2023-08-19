@@ -4,6 +4,7 @@ from datetime import date, datetime
 from meilisearch import Client
 
 from models import EmbeddedArticle, Event
+import config
 
 
 class AbstractNewsClient(ABC):
@@ -35,7 +36,7 @@ class MeilisearchNewsClient(AbstractNewsClient):
             EmbeddedArticle(
                 title=doc["title"],
                 url=doc["url"],
-                thumbnail_url=doc["thumbnailUrl"],
+                thumbnail_url=getattr(doc, "thumbnailUrl", config.DEFAULT_IMAGE_URL),
                 date_published=datetime.fromtimestamp(doc["publishedTime"]),
                 snippet=doc["description"],
                 embeddings=doc["embeddings"],

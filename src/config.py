@@ -29,3 +29,5 @@ SENTRY_SAMPLE_RATE = 1.0
 if IS_DEV_MODE:
     ALLOWED_HOSTS = ['*']
     logging.basicConfig(level=logging.DEBUG)
+
+DEFAULT_IMAGE_URL = "https://www.mxwiki.com/password/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png"
