@@ -29,7 +29,6 @@
         "description": "Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on defence approved on Friday by the government of Japanese Prime Minister Fumio Kishida.",
         "uuid": "91bc847b-9e9d-497f-9de4-d22b219390be",
         "content": "TOKYO : Japan sees China's growing ambition for power as its \"greatest strategic challenge,\" according to the new white paper on def...",
-
         "thumbnailUrl": "https://www.reuters.com/resizer/Cr0DMOyD_IkT6hcOsRTU8xtbE5g=/1200x628/smart/filters:quality(80)/cloudfront-us-east-2.images.arcpublishing.com/reuters/RNAKI34TPRIRDNFWTIZYWDRUIA.jpg",
         "url": "https://www.reuters.com/business/aerospace-defense/china-us-boost-passenger-airline-flights-usdot-2023-05-03/",
         "publishedTime": 1683157315,
@@ -109,7 +108,9 @@
 
 **Making it fast, cheap, and reliable**
 
-- Serverless wasn't an option — we had to choose between dealing with weak CPUs, cold starts, or high prices
+- Recently queried articles are cached on DynamoDB.
+
+- In terms of architecture, serverless wasn't an option — we had to choose between dealing with weak CPUs, cold starts, or high prices
 
 - We decided to run the backend on a Digital Ocean droplet, which is moderately powerful at a low price. To save on cost, the droplet is shared with the data pipeline, and pm2 is used to manage the processes.
 
