@@ -7,6 +7,9 @@ load_dotenv()
 
 IS_DEV_MODE = os.environ.get('TIMELINES_DEVELOPMENT_MODE') == 'true'
 
+# Article settings
+DISABLED_NEWS_SOURCES = os.environ["DISABLED_NEWS_SOURCES"].split(",") if os.environ["DISABLED_NEWS_SOURCES"] else ""
+
 # Meilisearch
 MEILISEARCH_URL = os.environ["MEILISEARCH_URL"]
 MEILISEARCH_KEY = os.environ["MEILISEARCH_KEY"]

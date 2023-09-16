@@ -27,8 +27,10 @@ class MeilisearchNewsClient(AbstractNewsClient):
         self.index = self.meilisearch_client.index(index_name)
 
     def fetch_news(self, query: str, before: datetime, after: datetime) -> list[EmbeddedArticle]:
+        published_time_filter = f"publishedTime >= {after.timestamp()} AND publishedTime < {before.timestamp()}"
+        source_filter = f"source NOT IN [{', '.join(config.DISABLED_NEWS_SOURCES)}]"
         response = self.index.search(query, {
-            "filter": f"publishedTime >= {after.timestamp()} AND publishedTime < {before.timestamp()}",
+            "filter": f"{published_time_filter} AND {source_filter}",
             "limit": 1000,
         })
         documents = response["hits"]
