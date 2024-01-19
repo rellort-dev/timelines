@@ -19,6 +19,7 @@ class Event(BaseModel):
     name: str
     date: date
     articles: list[Article]
+    summary: str
 
 
 class Timeline(BaseModel):

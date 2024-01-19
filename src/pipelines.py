@@ -1,15 +1,16 @@
+from abc import ABC, abstractmethod
 
 import pandas as pd
-from abc import ABC, abstractmethod
 from sklearn.cluster import OPTICS
+from tqdm import tqdm
 
 from models import EmbeddedArticle, Event
 from utils import (
+    cluster_each_window,
     get_event_title,
     get_modal_date,
-    remove_largest_cluster_of_each_window,
     partition_into_windows,
-    cluster_each_window,
+    remove_largest_cluster_of_each_window,
 )
 
 
@@ -22,15 +23,19 @@ class AbstractPipeline(ABC):
 
 
 class SlidingWindowOpticsPipeline(AbstractPipeline):
+    def __init__(self, summarizer: callable, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.summarizer = summarizer
 
     def _parse_into_events(self, clusters_for_each_window: list[list[pd.DataFrame]]) -> list[Event]:
         events = []
-        for window in clusters_for_each_window:
+        for window in tqdm(clusters_for_each_window):
             for cluster in window:
                 event = {
-                    'name': get_event_title(cluster),
-                    'date': get_modal_date(cluster).isoformat(),
-                    'articles': cluster.drop(columns=['embeddings']).to_dict('records')
+                    "name": get_event_title(cluster),
+                    "date": get_modal_date(cluster).isoformat(),
+                    "articles": cluster.drop(columns=["embeddings"]).to_dict("records"),
+                    "summary": self.summarizer(cluster),
                 }
                 events.append(event)
         return events
@@ -56,4 +61,4 @@ class SlidingWindowOpticsPipeline(AbstractPipeline):
         clusters_for_each_window = remove_largest_cluster_of_each_window(clusters_for_each_window)
 
         events = self._parse_into_events(clusters_for_each_window)
-        return sorted(events, key=lambda event: event['date'], reverse=True)
+        return sorted(events, key=lambda event: event["date"], reverse=True)
